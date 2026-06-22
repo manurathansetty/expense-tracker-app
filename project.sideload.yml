@@ -1,0 +1,39 @@
+# Single-target variant used ONLY to produce an AltStore/SideStore .ipa.
+# Free Apple IDs allow ~3 active sideloaded apps at once, and AltStore itself
+# uses one slot — so this build drops the widget + share extensions (which
+# can't share data on free signing anyway) to stay within the limit.
+# Build:  xcodegen generate --spec project.sideload.yml
+#         (then archive/package — see scripts/make-ipa.sh)
+name: PiSideload
+options:
+  bundleIdPrefix: ai.pageloop
+  deploymentTarget:
+    iOS: "18.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    CODE_SIGN_STYLE: Automatic
+    SWIFT_EMIT_LOC_STRINGS: YES
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    TARGETED_DEVICE_FAMILY: "1"
+
+targets:
+  Pi:
+    type: application
+    platform: iOS
+    sources:
+      - path: Shared
+      - path: Pi
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ai.pageloop.pi
+        PRODUCT_NAME: Pi
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: Pi/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor

@@ -6,3 +6,6 @@ DerivedData/
 xcuserdata/
 *.xcuserstate
 build-device/
+build-ipa/
+dist/
+PiSideload.xcodeproj/
