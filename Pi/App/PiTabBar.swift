@@ -7,13 +7,12 @@ struct PiTabBar: View {
     @Binding var selected: AppRouter.Tab
     var onAdd: () -> Void
     var onAction: (FanAction) -> Void
-    var forceOpen: Bool = false
 
     @State private var fanOpen = false
     @State private var selection: FanAction?
 
     private let buttonSize: CGFloat = 74
-    private var isOpen: Bool { fanOpen || forceOpen }
+    private var isOpen: Bool { fanOpen }
 
     var body: some View {
         ZStack {
@@ -116,18 +115,18 @@ struct PiTabBar: View {
     }
 
     private func fanItem(_ action: FanAction, highlighted: Bool) -> some View {
-        VStack(spacing: 4) {
+        VStack(spacing: 6) {
             ZStack {
                 Circle()
                     .fill(highlighted ? AnyShapeStyle(action.color) : AnyShapeStyle(.bar))
-                    .frame(width: highlighted ? 60 : 52, height: highlighted ? 60 : 52)
-                    .shadow(color: .black.opacity(0.15), radius: 6, y: 3)
+                    .frame(width: highlighted ? 90 : 78, height: highlighted ? 90 : 78)
+                    .shadow(color: .black.opacity(0.18), radius: 8, y: 4)
                 Image(systemName: action.icon)
-                    .font(.title3.weight(.semibold))
+                    .font(.system(size: 28, weight: .semibold))
                     .foregroundStyle(highlighted ? Color.white : action.color)
             }
             Text(action.title)
-                .font(.caption2.weight(.semibold))
+                .font(.caption.weight(.semibold))
                 .foregroundStyle(.primary)
                 .shadow(color: Color(.systemBackground), radius: 2)
                 .shadow(color: Color(.systemBackground), radius: 2)

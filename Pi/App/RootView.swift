@@ -32,8 +32,7 @@ struct RootView: View {
             PiTabBar(
                 selected: $router.selectedTab,
                 onAdd: { Haptics.tap(); router.openQuickAdd() },
-                onAction: { handleFan($0) },
-                forceOpen: ProcessInfo.processInfo.environment["TALLY_FAN"] == "1"
+                onAction: { handleFan($0) }
             )
         }
         .ignoresSafeArea(.keyboard)
