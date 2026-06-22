@@ -145,7 +145,7 @@
 		04E615903AE4F6F5A67CA660 /* PiTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = PiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0548EB34D60C3D1D4C8C27AB /* SharedSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedSnapshot.swift; sourceTree = "<group>"; };
 		05886E3C6B84E564EA8FAF2B /* PeopleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleView.swift; sourceTree = "<group>"; };
-		0626CBA767E8B1CDE2EFB42B /* Pi.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Pi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0626CBA767E8B1CDE2EFB42B /* Pi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0EEE12A5A96A5381298676C8 /* BudgetEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetEngineTests.swift; sourceTree = "<group>"; };
 		1038E9BFB581111A7DF8A423 /* InsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsView.swift; sourceTree = "<group>"; };
 		125072246841304BD08E2092 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
@@ -162,7 +162,7 @@
 		44119CD11EDB6513742EFF14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		4C22D7B76F257FDDD9E16961 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
 		51F5CF1BB8998F05630965CB /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
-		534D1AA0581E88CEE84A3D6B /* PiWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = PiWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		534D1AA0581E88CEE84A3D6B /* PiWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PiWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		56606A9FEC81C4A1B71CAB5A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		57B239FE6E1B17F194B412A6 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
 		5E1CFEC2A7290A1DD11BC221 /* QuickAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddView.swift; sourceTree = "<group>"; };
@@ -181,7 +181,7 @@
 		952A482B25EF7D536166FE2A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		95784D062E59097FB4881DCD /* TodayWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayWidget.swift; sourceTree = "<group>"; };
 		A3657C10613E4699623F7850 /* Payee.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Payee.swift; sourceTree = "<group>"; };
-		B736B79840BD49D0111BA7F8 /* PiShareExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = PiShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B736B79840BD49D0111BA7F8 /* PiShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PiShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B757153E55B33361D444E1C9 /* AppGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroup.swift; sourceTree = "<group>"; };
 		BC0F62F090CC74A119FD80EF /* DemoData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
 		BEE0CC5837BDB1397964D23D /* NotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduler.swift; sourceTree = "<group>"; };
@@ -570,15 +570,12 @@
 						ProvisioningStyle = Automatic;
 					};
 					72416FE8D69F2AFDE682D02F = {
-						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 					98A72841A41D66AB9BF03985 = {
-						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 					A892DB4C39D7590437639522 = {
-						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -759,6 +756,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				DEVELOPMENT_TEAM = T9KT23548H;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = PiWidgets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -779,6 +777,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = T9KT23548H;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Pi/Info.plist;
@@ -797,6 +796,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				DEVELOPMENT_TEAM = T9KT23548H;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = PiWidgets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -814,6 +814,7 @@
 		4A64576B512B1D3169DA510C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEVELOPMENT_TEAM = T9KT23548H;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = PiShareExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -831,6 +832,7 @@
 		50A7671B3948B82641D7D066 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEVELOPMENT_TEAM = T9KT23548H;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = PiShareExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -948,6 +950,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = T9KT23548H;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Pi/Info.plist;

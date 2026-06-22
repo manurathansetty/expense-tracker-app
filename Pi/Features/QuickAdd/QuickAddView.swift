@@ -1,9 +1,9 @@
 import SwiftUI
 import SwiftData
 
-/// The fast capture sheet. Calculator-style keypad (each digit shifts minor
-/// units, so "1 2 5 0" = 12.50), direction toggle, theme chips, and optional
-/// person — designed so a normal expense is two taps from open.
+/// The fast capture sheet. Uses the system keyboards only — a decimal keypad for
+/// the amount (auto-focused) and the normal text keyboard for the note — so
+/// there's never a second custom keypad fighting the system one.
 struct QuickAddView: View {
     var prefillMessage: String?
 
@@ -19,7 +19,7 @@ struct QuickAddView: View {
 
     @Query private var settingsList: [BudgetSettings]
 
-    @State private var enteredMinor = 0
+    @State private var amountText = ""
     @State private var direction: Direction = .paid
     @State private var selectedCategory: Category?
     @State private var selectedPayee: Payee?
@@ -29,36 +29,28 @@ struct QuickAddView: View {
 
     @State private var showBlockerAlert = false
     @State private var showAddPerson = false
-    @FocusState private var noteFocused: Bool
+    @FocusState private var amountFocused: Bool
 
     private var settings: BudgetSettings? { settingsList.first }
     private var currencyCode: String { settings?.currencyCode ?? Money.defaultCurrencyCode }
-    private var money: Money { Money(minorUnits: enteredMinor, currencyCode: currencyCode) }
+    private var enteredMinor: Int { Money.minorUnits(fromUserInput: amountText) ?? 0 }
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                amountDisplay
-                directionPicker
-                ScrollView {
-                    VStack(alignment: .leading, spacing: DS.Spacing.xl) {
-                        themeSection
-                        if direction != .paid || selectedPayee != nil {
-                            peopleSection
-                        } else {
-                            peopleSection // still available for normal expenses
-                        }
-                        noteField
-                    }
-                    .padding(.horizontal, DS.Spacing.lg)
-                    .padding(.top, DS.Spacing.lg)
+            ScrollView {
+                VStack(alignment: .leading, spacing: DS.Spacing.xl) {
+                    amountField
+                    directionPicker
+                    themeSection
+                    peopleSection
+                    noteField
                 }
-                NumberPad(
-                    onDigit: appendDigit,
-                    onDelete: deleteDigit
-                )
-                saveButton
+                .padding(.horizontal, DS.Spacing.lg)
+                .padding(.top, DS.Spacing.md)
+                .padding(.bottom, 100)
             }
+            .scrollDismissesKeyboard(.interactively)
+            .safeAreaInset(edge: .bottom) { saveButton }
             .navigationTitle("Add")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -66,7 +58,10 @@ struct QuickAddView: View {
                     Button("Cancel") { dismiss() }
                 }
             }
-            .onAppear(perform: applyPrefill)
+            .onAppear {
+                applyPrefill()
+                if amountText.isEmpty { amountFocused = true }
+            }
             .sheet(isPresented: $showAddPerson) {
                 EditPayeeView { newPayee in selectedPayee = newPayee }
             }
@@ -83,22 +78,27 @@ struct QuickAddView: View {
 
     // MARK: Sections
 
-    private var amountDisplay: some View {
+    private var amountField: some View {
         VStack(spacing: DS.Spacing.xs) {
-            Text(money.formatted())
-                .font(.system(size: 48, weight: .bold, design: .rounded))
-                .monospacedDigit()
-                .contentTransition(.numericText())
-                .animation(.snappy, value: enteredMinor)
-                .foregroundStyle(enteredMinor == 0 ? .secondary : .primary)
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                Text(Money.symbol(for: currencyCode))
+                    .font(.system(size: 34, weight: .semibold, design: .rounded))
+                    .foregroundStyle(.secondary)
+                TextField("0", text: $amountText)
+                    .font(.system(size: 48, weight: .bold, design: .rounded))
+                    .monospacedDigit()
+                    .keyboardType(.decimalPad)
+                    .focused($amountFocused)
+                    .fixedSize()
+            }
+            .frame(maxWidth: .infinity)
             if source == .message {
                 Label("From message", systemImage: "text.bubble")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
         }
-        .padding(.top, DS.Spacing.lg)
-        .frame(maxWidth: .infinity)
+        .padding(.top, DS.Spacing.sm)
     }
 
     private var directionPicker: some View {
@@ -108,8 +108,6 @@ struct QuickAddView: View {
             }
         }
         .pickerStyle(.segmented)
-        .padding(.horizontal, DS.Spacing.lg)
-        .padding(.top, DS.Spacing.md)
         .onChange(of: direction) { _, _ in Haptics.select() }
     }
 
@@ -153,7 +151,7 @@ struct QuickAddView: View {
                     } label: {
                         Chip(title: "Add", systemImage: "person.badge.plus", isSelected: false)
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(PressableButtonStyle())
 
                     ForEach(payees) { payee in
                         Button {
@@ -181,14 +179,12 @@ struct QuickAddView: View {
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.secondary)
             TextField("What was it for?", text: $note, axis: .vertical)
-                .focused($noteFocused)
                 .padding(DS.Spacing.md)
                 .background(
                     RoundedRectangle(cornerRadius: DS.Radius.sm, style: .continuous)
                         .fill(Color(.secondarySystemGroupedBackground))
                 )
         }
-        .padding(.bottom, DS.Spacing.lg)
     }
 
     private var saveButton: some View {
@@ -207,19 +203,6 @@ struct QuickAddView: View {
         .background(.bar)
     }
 
-    // MARK: Keypad actions
-
-    private func appendDigit(_ digit: Int) {
-        guard enteredMinor < 1_000_000_000 else { return } // sane cap
-        enteredMinor = enteredMinor * 10 + digit
-        Haptics.tap()
-    }
-
-    private func deleteDigit() {
-        enteredMinor /= 10
-        Haptics.tap()
-    }
-
     // MARK: Save
 
     private var blockerMessage: String {
@@ -232,7 +215,6 @@ struct QuickAddView: View {
 
     private func attemptSave() {
         let service = LedgerService(context: context)
-        // Default to the model's default (blocker ON) when the row isn't seeded yet.
         let enforce = settings?.enforceBlocker ?? true
         if enforce, service.wouldBreachCeiling(addingMinor: enteredMinor, direction: direction) {
             Haptics.warning()
@@ -265,7 +247,9 @@ struct QuickAddView: View {
     private func applyPrefill() {
         guard let text = prefillMessage, !text.isEmpty else { return }
         let parsed = TransactionParser.parse(text)
-        if let minor = parsed.amountMinor { enteredMinor = minor }
+        if let minor = parsed.amountMinor {
+            amountText = String(format: "%.2f", Double(minor) / 100)
+        }
         direction = parsed.direction
         rawMessage = text
         source = .message
@@ -280,52 +264,5 @@ struct QuickAddView: View {
     private func merchantMatchesCategory(_ merchant: String?, _ category: Category) -> Bool {
         guard let merchant = merchant?.lowercased() else { return false }
         return merchant.contains(category.name.lowercased())
-    }
-}
-
-/// A compact numeric keypad. Digits shift the running minor-unit amount.
-private struct NumberPad: View {
-    let onDigit: (Int) -> Void
-    let onDelete: () -> Void
-
-    private let rows: [[String]] = [
-        ["1", "2", "3"],
-        ["4", "5", "6"],
-        ["7", "8", "9"],
-        ["", "0", "⌫"],
-    ]
-
-    var body: some View {
-        VStack(spacing: DS.Spacing.sm) {
-            ForEach(rows, id: \.self) { row in
-                HStack(spacing: DS.Spacing.sm) {
-                    ForEach(row, id: \.self) { key in
-                        keyButton(key)
-                    }
-                }
-            }
-        }
-        .padding(.horizontal, DS.Spacing.lg)
-        .padding(.top, DS.Spacing.sm)
-    }
-
-    @ViewBuilder
-    private func keyButton(_ key: String) -> some View {
-        if key.isEmpty {
-            Color.clear.frame(maxWidth: .infinity).frame(height: 52)
-        } else {
-            Button {
-                if key == "⌫" { onDelete() }
-                else if let digit = Int(key) { onDigit(digit) }
-            } label: {
-                Text(key)
-                    .font(.title2.weight(.medium))
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 52)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .foregroundStyle(.primary)
-        }
     }
 }
