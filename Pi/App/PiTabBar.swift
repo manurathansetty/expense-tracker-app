@@ -21,7 +21,7 @@ struct PiTabBar: View {
                 tab(.insights, "Insights", "chart.pie.fill")
                 Spacer().frame(width: 78)
                 tab(.budget, "Budget", "target")
-                tab(.settings, "Settings", "gearshape.fill")
+                tab(.settings, "More", "ellipsis.circle.fill")
             }
             .padding(.horizontal, 8)
             .frame(height: 62)

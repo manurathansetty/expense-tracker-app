@@ -118,7 +118,7 @@ struct SettingsView: View {
             .listSectionSpacing(14)
             .contentMargins(.top, 8, for: .scrollContent)
             .bottomBarClearance()
-            .navigationTitle("Settings")
+            .navigationTitle("More")
             .navigationBarTitleDisplayMode(.inline)
             .task {
                 SeedData.ensureSettings(context)
