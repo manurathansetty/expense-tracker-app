@@ -20,6 +20,7 @@ enum DemoData {
         let settings = (try? context.fetch(FetchDescriptor<BudgetSettings>()).first) ?? BudgetSettings()
         settings.monthlyIncomeMinor = 8_000_000   // ₹80,000
         settings.currencyCode = "INR"
+        settings.monthlyGoal = "Saving for a new MacBook"
         if (try? context.fetchCount(FetchDescriptor<BudgetSettings>())) == 0 {
             context.insert(settings)
         }

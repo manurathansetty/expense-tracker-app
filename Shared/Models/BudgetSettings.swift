@@ -24,13 +24,18 @@ final class BudgetSettings {
     /// payment") and subtracted from what's available.
     var carryOverOverspend: Bool = true
 
+    /// A free-text intention for the month ("Saving for a new MacBook"), shown
+    /// in the persistent top header.
+    var monthlyGoal: String = ""
+
     init(
         monthlyIncomeMinor: Int = 0,
         currencyCode: String = Money.defaultCurrencyCode,
         monthlyCeilingMinor: Int? = nil,
         enforceBlocker: Bool = true,
         monthStartDay: Int = 1,
-        carryOverOverspend: Bool = true
+        carryOverOverspend: Bool = true,
+        monthlyGoal: String = ""
     ) {
         self.id = UUID()
         self.monthlyIncomeMinor = monthlyIncomeMinor
@@ -39,5 +44,6 @@ final class BudgetSettings {
         self.enforceBlocker = enforceBlocker
         self.monthStartDay = monthStartDay
         self.carryOverOverspend = carryOverOverspend
+        self.monthlyGoal = monthlyGoal
     }
 }

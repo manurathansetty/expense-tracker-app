@@ -23,6 +23,23 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             List {
+                Section {
+                    HStack(alignment: .top, spacing: DS.Spacing.md) {
+                        Image(systemName: "target")
+                            .foregroundStyle(DS.accent)
+                            .font(.title3)
+                        TextField("e.g. Saving for a new MacBook", text: Binding(
+                            get: { settings.monthlyGoal },
+                            set: { settings.monthlyGoal = $0; LedgerService(context: context).save() }
+                        ), axis: .vertical)
+                        .lineLimit(1...3)
+                    }
+                } header: {
+                    Text("This month's goal")
+                } footer: {
+                    Text("Shown at the top of every screen as a reminder of what you're working toward.")
+                }
+
                 Section("Organize") {
                     NavigationLink {
                         ThemesView()
@@ -36,10 +53,9 @@ struct SettingsView: View {
                 }
 
                 Section("Appearance") {
-                    Picker("Theme", selection: $appearanceRaw) {
-                        ForEach(AppAppearance.allCases) { Text($0.label).tag($0.rawValue) }
-                    }
-                    .pickerStyle(.segmented)
+                    AppearancePicker(rawValue: $appearanceRaw)
+                        .listRowInsets(EdgeInsets(top: 10, leading: 16, bottom: 10, trailing: 16))
+                        .listRowBackground(Color.clear)
                 }
 
                 Section("Currency") {

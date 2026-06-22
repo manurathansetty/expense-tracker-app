@@ -62,6 +62,7 @@
 		93E0E3E18B67D45DACBAF701 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F5CF1BB8998F05630965CB /* Category.swift */; };
 		987C57C72927F06667F98187 /* ExpenseRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C958D4FF707D45E123429156 /* ExpenseRow.swift */; };
 		9895C615F8EB70FF353A6728 /* Expense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815C132004AADE79246A5116 /* Expense.swift */; };
+		98AF80C17905A63699173B13 /* AppearancePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4C8261AF3F03289281510F /* AppearancePicker.swift */; };
 		9B98E5683D62DA58D6F97F2D /* Payee.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3657C10613E4699623F7850 /* Payee.swift */; };
 		9BB564698B64215A682EA035 /* Money.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D9BC199C0AA8E3FE2578391 /* Money.swift */; };
 		9E9FE326EC2941645B31C2B5 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B239FE6E1B17F194B412A6 /* DesignSystem.swift */; };
@@ -199,6 +200,7 @@
 		D2EBE9B08E36E51D221099C2 /* ShortcutsHelpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutsHelpView.swift; sourceTree = "<group>"; };
 		D36847A90158BBF20372C9C8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		DB6D24ED598C09C27454E927 /* AppAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAppearance.swift; sourceTree = "<group>"; };
+		DE4C8261AF3F03289281510F /* AppearancePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearancePicker.swift; sourceTree = "<group>"; };
 		E02752B251ED06F07BD79D56 /* Commitment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Commitment.swift; sourceTree = "<group>"; };
 		E0FFEAA8A43C6B7EB344B806 /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
 		E69E0C50CD20A0F1248579B6 /* PiWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiWidgetsBundle.swift; sourceTree = "<group>"; };
@@ -427,6 +429,7 @@
 		B8A857AEFF1835D3A1207702 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				DE4C8261AF3F03289281510F /* AppearancePicker.swift */,
 				952A482B25EF7D536166FE2A /* SettingsView.swift */,
 				D2EBE9B08E36E51D221099C2 /* ShortcutsHelpView.swift */,
 			);
@@ -706,6 +709,7 @@
 				CE630462F20FA3189433AADC /* AppAppearance.swift in Sources */,
 				C51229F2C2DF6D06231B18AB /* AppGroup.swift in Sources */,
 				7344E6D6BC7214C80E4276F0 /* AppRouter.swift in Sources */,
+				98AF80C17905A63699173B13 /* AppearancePicker.swift in Sources */,
 				A1FE6D63949C4D7AE2AD1AB2 /* BudgetEditors.swift in Sources */,
 				E4E6FAEA0B56FC009E211918 /* BudgetEngine.swift in Sources */,
 				0DC6232C19A3D4200A0BC8D2 /* BudgetSettings.swift in Sources */,

@@ -62,7 +62,8 @@ struct RootView: View {
         content
             .tag(which)
             .toolbar(.hidden, for: .tabBar)
-            .safeAreaInset(edge: .bottom) { Color.clear.frame(height: 94) }
+            // Clearance so scroll content never hides behind the raised bar/FAB.
+            .safeAreaInset(edge: .bottom) { Color.clear.frame(height: 116) }
     }
 
     @ViewBuilder

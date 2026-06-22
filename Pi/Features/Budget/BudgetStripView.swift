@@ -1,30 +1,58 @@
 import SwiftUI
 import SwiftData
 
-/// A thin, full-bleed budget progress bar pinned to the very top of every tab.
-/// Green→red as the month fills; flips to a hatched "quota used" bar once over.
-/// Intentionally text-free — the detailed figures live in the home card.
+/// The persistent top header on every tab: the month's goal/intention (set in
+/// Settings), the days left in the month, and a thin full-bleed progress bar
+/// (green→red, hatched once over budget).
 struct BudgetStripView: View {
     @Environment(\.modelContext) private var context
-    // These queries exist to re-render the bar when data changes; the figures are
-    // computed by LedgerService so the lag/carryover logic stays in one place.
+    @Environment(AppRouter.self) private var router
+    // Queries re-render the header when data changes; figures come from
+    // LedgerService so the lag/carryover logic stays in one place.
     @Query private var expenses: [Expense]
     @Query private var commitments: [Commitment]
     @Query private var settingsList: [BudgetSettings]
 
     private var summary: BudgetSummary { LedgerService(context: context).currentSummary() }
+    private var goal: String {
+        (settingsList.first?.monthlyGoal ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+    }
 
     var body: some View {
-        BudgetBar(
-            fraction: summary.fractionUsed,
-            tint: DS.health(forFraction: summary.fractionUsed),
-            isOver: summary.isOverCeiling
-        )
-        .frame(height: 5)
-        .frame(maxWidth: .infinity)
-        .accessibilityElement()
-        .accessibilityLabel("Budget used")
-        .accessibilityValue("\(Int(min(1, summary.fractionUsed) * 100)) percent")
+        VStack(spacing: DS.Spacing.sm) {
+            Button {
+                Haptics.tap()
+                router.selectedTab = .settings
+            } label: {
+                HStack(spacing: DS.Spacing.sm) {
+                    Image(systemName: goal.isEmpty ? "sparkles" : "target")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(goal.isEmpty ? AnyShapeStyle(Color.secondary) : AnyShapeStyle(DS.accent))
+                    Text(goal.isEmpty ? "What are you working toward this month?" : goal)
+                        .font(.subheadline.weight(goal.isEmpty ? .regular : .semibold))
+                        .foregroundStyle(goal.isEmpty ? .secondary : .primary)
+                        .lineLimit(1)
+                    Spacer(minLength: DS.Spacing.sm)
+                    Text("\(summary.daysRemaining)d left")
+                        .font(.caption2.weight(.semibold))
+                        .monospacedDigit()
+                        .foregroundStyle(.secondary)
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .padding(.horizontal, DS.Spacing.lg)
+            .padding(.top, DS.Spacing.xs)
+
+            BudgetBar(
+                fraction: summary.fractionUsed,
+                tint: DS.health(forFraction: summary.fractionUsed),
+                isOver: summary.isOverCeiling
+            )
+            .frame(height: 5)
+            .frame(maxWidth: .infinity)
+        }
+        .background(.bar, ignoresSafeAreaEdges: .top)
     }
 }
 
