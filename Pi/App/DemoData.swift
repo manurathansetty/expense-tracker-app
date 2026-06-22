@@ -107,6 +107,15 @@ enum DemoData {
             }
         }
 
+        // Optional: push this month over budget to preview the "quota used" state.
+        if ProcessInfo.processInfo.environment["TALLY_OVER"] == "1" {
+            let big = Expense(
+                amountMinor: 3_500_000, currencyCode: "INR", note: "Laptop",
+                date: now, direction: .paid, source: .manual, category: category("Shopping")
+            )
+            context.insert(big)
+        }
+
         try? context.save()
     }
 }

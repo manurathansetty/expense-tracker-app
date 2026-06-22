@@ -37,7 +37,7 @@ struct SettingsView: View {
                 } header: {
                     Text("This month's goal")
                 } footer: {
-                    Text("Shown at the top of every screen as a reminder of what you're working toward.")
+                    Text("Shown as your home screen title — a reminder of what you're working toward.")
                 }
 
                 Section("Organize") {
@@ -105,6 +105,7 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Settings")
+            .navigationBarTitleDisplayMode(.inline)
             .task {
                 SeedData.ensureSettings(context)
                 try? context.save()

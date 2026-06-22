@@ -65,10 +65,14 @@ struct PiTabBar: View {
                 .fill(DS.accent)
                 .frame(width: 60, height: 60)
                 .shadow(color: DS.accent.opacity(0.35), radius: 10, y: 4)
-            Image(systemName: "plus")
-                .font(.title2.weight(.bold))
-                .foregroundStyle(DS.onAccent)
-                .rotationEffect(.degrees(isOpen ? 45 : 0))
+            Group {
+                if isOpen {
+                    Image(systemName: "xmark").font(.title2.weight(.bold))
+                } else {
+                    Text("π").font(.system(size: 30, weight: .bold))
+                }
+            }
+            .foregroundStyle(DS.onAccent)
         }
         .scaleEffect(isOpen ? 0.92 : 1)
         .overlay { fanOverlay }

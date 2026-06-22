@@ -1,58 +1,30 @@
 import SwiftUI
 import SwiftData
 
-/// The persistent top header on every tab: the month's goal/intention (set in
-/// Settings), the days left in the month, and a thin full-bleed progress bar
-/// (green→red, hatched once over budget).
+/// A thin, full-bleed progress bar pinned to the very top of every tab
+/// (green→red, hatched "/////" once over budget). The month's goal lives in the
+/// page title; the π brand lives in the add button.
 struct BudgetStripView: View {
     @Environment(\.modelContext) private var context
-    @Environment(AppRouter.self) private var router
-    // Queries re-render the header when data changes; figures come from
+    // Queries re-render the bar when data changes; figures come from
     // LedgerService so the lag/carryover logic stays in one place.
     @Query private var expenses: [Expense]
     @Query private var commitments: [Commitment]
     @Query private var settingsList: [BudgetSettings]
 
     private var summary: BudgetSummary { LedgerService(context: context).currentSummary() }
-    private var goal: String {
-        (settingsList.first?.monthlyGoal ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
-    }
 
     var body: some View {
-        VStack(spacing: 0) {
-            BudgetBar(
-                fraction: summary.fractionUsed,
-                tint: DS.health(forFraction: summary.fractionUsed),
-                isOver: summary.isOverCeiling
-            )
-            .frame(height: 5)
-            .frame(maxWidth: .infinity)
-
-            Button {
-                Haptics.tap()
-                router.selectedTab = .settings
-            } label: {
-                HStack(spacing: DS.Spacing.sm) {
-                    Image(systemName: goal.isEmpty ? "sparkles" : "target")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(goal.isEmpty ? AnyShapeStyle(Color.secondary) : AnyShapeStyle(DS.accent))
-                    Text(goal.isEmpty ? "What are you working toward this month?" : goal)
-                        .font(.subheadline.weight(goal.isEmpty ? .regular : .semibold))
-                        .foregroundStyle(goal.isEmpty ? .secondary : .primary)
-                        .lineLimit(1)
-                    Spacer(minLength: DS.Spacing.sm)
-                    Text("\(summary.daysRemaining)d left")
-                        .font(.caption2.weight(.semibold))
-                        .monospacedDigit()
-                        .foregroundStyle(.secondary)
-                }
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .padding(.horizontal, DS.Spacing.lg)
-            .padding(.vertical, DS.Spacing.sm)
-        }
-        .background(.bar, ignoresSafeAreaEdges: .top)
+        BudgetBar(
+            fraction: summary.fractionUsed,
+            tint: DS.health(forFraction: summary.fractionUsed),
+            isOver: summary.isOverCeiling
+        )
+        .frame(height: 9)
+        .frame(maxWidth: .infinity)
+        .accessibilityElement()
+        .accessibilityLabel("Budget used")
+        .accessibilityValue("\(Int(min(1, summary.fractionUsed) * 100)) percent")
     }
 }
 
@@ -82,22 +54,18 @@ private struct BudgetBar: View {
     }
 }
 
-/// Diagonal cross-hatch used for the "quota used" state.
+/// Single-direction diagonal stripes ("/////") used for the "quota used" state.
 private struct HatchPattern: View {
     var body: some View {
         Canvas { context, size in
-            let spacing: CGFloat = 6
-            let color = Color.secondary.opacity(0.5)
+            let spacing: CGFloat = 8
+            let color = Color.secondary.opacity(0.55)
             var x = -size.height
             while x < size.width {
-                var up = Path()
-                up.move(to: CGPoint(x: x, y: size.height))
-                up.addLine(to: CGPoint(x: x + size.height, y: 0))
-                context.stroke(up, with: .color(color), lineWidth: 1.1)
-                var down = Path()
-                down.move(to: CGPoint(x: x, y: 0))
-                down.addLine(to: CGPoint(x: x + size.height, y: size.height))
-                context.stroke(down, with: .color(color), lineWidth: 1.1)
+                var stripe = Path()
+                stripe.move(to: CGPoint(x: x, y: size.height))
+                stripe.addLine(to: CGPoint(x: x + size.height, y: 0))
+                context.stroke(stripe, with: .color(color), lineWidth: 2)
                 x += spacing
             }
         }

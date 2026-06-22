@@ -60,6 +60,7 @@ struct BudgetView: View {
                 projectionSection
             }
             .navigationTitle("Budget")
+            .navigationBarTitleDisplayMode(.inline)
             .task {
                 SeedData.ensureSettings(context)
                 try? context.save()

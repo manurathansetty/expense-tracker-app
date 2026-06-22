@@ -24,6 +24,11 @@ struct LedgerView: View {
 
     private var settings: BudgetSettings? { settingsList.first }
 
+    /// The month's goal becomes the page title (empty when not set).
+    private var headerTitle: String {
+        (settings?.monthlyGoal ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     private var filteredExpenses: [Expense] {
         guard !searchText.isEmpty else { return expenses }
         let needle = searchText.lowercased()
@@ -88,7 +93,8 @@ struct LedgerView: View {
                 }
             }
             .listStyle(.insetGrouped)
-            .navigationTitle("π")
+            .navigationTitle(headerTitle)
+            .navigationBarTitleDisplayMode(.inline)
             .searchable(text: $searchText, prompt: "Search notes, themes, people")
         }
     }
