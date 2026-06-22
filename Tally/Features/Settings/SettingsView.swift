@@ -6,6 +6,8 @@ struct SettingsView: View {
     @Query private var expenses: [Expense]
     @Query private var settingsList: [BudgetSettings]
 
+    @AppStorage(AppAppearance.storageKey) private var appearanceRaw = AppAppearance.system.rawValue
+
     @State private var csvURL: URL?
     @State private var jsonURL: URL?
 
@@ -28,6 +30,13 @@ struct SettingsView: View {
                     NavigationLink {
                         PeopleView()
                     } label: { Label("People", systemImage: "person.2.fill") }
+                }
+
+                Section("Appearance") {
+                    Picker("Theme", selection: $appearanceRaw) {
+                        ForEach(AppAppearance.allCases) { Text($0.label).tag($0.rawValue) }
+                    }
+                    .pickerStyle(.segmented)
                 }
 
                 Section("Currency") {

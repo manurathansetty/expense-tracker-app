@@ -30,7 +30,6 @@ targets:
         PRODUCT_NAME: Tally
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: Tally/Info.plist
-        CODE_SIGN_ENTITLEMENTS: Tally/Tally.entitlements
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         ENABLE_PREVIEWS: YES
@@ -50,7 +49,6 @@ targets:
         PRODUCT_NAME: TallyWidgets
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: TallyWidgets/Info.plist
-        CODE_SIGN_ENTITLEMENTS: TallyWidgets/TallyWidgets.entitlements
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
 
   TallyShareExtension:
@@ -65,7 +63,6 @@ targets:
         PRODUCT_NAME: TallyShareExtension
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: TallyShareExtension/Info.plist
-        CODE_SIGN_ENTITLEMENTS: TallyShareExtension/TallyShareExtension.entitlements
 
   TallyTests:
     type: bundle.unit-test

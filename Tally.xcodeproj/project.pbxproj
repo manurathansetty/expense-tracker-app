@@ -35,6 +35,7 @@
 		3FA2D26DC3ADECE58141D2F5 /* BudgetEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D48C8CA67D7C5E97346D88 /* BudgetEngineTests.swift */; };
 		45B91C8D8541CA4C49E4F521 /* ExpenseRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3B19F4A170FABF15A313365 /* ExpenseRow.swift */; };
 		46408D69162D613BE28B16EC /* Commitment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91583EEE1AA7828A010EFF1C /* Commitment.swift */; };
+		48ED4A3DEE07FDCE55B65A86 /* AppAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = B145D591649282D9EFFB8A2E /* AppAppearance.swift */; };
 		49BA29CE3F85464BFB2554B7 /* ModelContainerProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20FDB0117B5079433F989A15 /* ModelContainerProvider.swift */; };
 		49E0A9A7BC0441926EA37BA7 /* SeedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A62DDA18918EEDB3642C6884 /* SeedData.swift */; };
 		4C5C05875584219CD382F790 /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6810A19F50FACA91CB7DAD /* DemoData.swift */; };
@@ -182,6 +183,7 @@
 		AAC66EAC7C263564940D74CB /* RecurringEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecurringEngineTests.swift; sourceTree = "<group>"; };
 		AC6810A19F50FACA91CB7DAD /* DemoData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
 		AEC8C115A6DE15EE3D16F5AF /* BudgetSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetSettings.swift; sourceTree = "<group>"; };
+		B145D591649282D9EFFB8A2E /* AppAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAppearance.swift; sourceTree = "<group>"; };
 		B94715B2DE1EB4C456E53F17 /* ShareConfirmView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareConfirmView.swift; sourceTree = "<group>"; };
 		BD07A89C9EF367D0B3BF4C56 /* TallyTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TallyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD37C33E2D6C6DFE6A2F78BF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -363,6 +365,7 @@
 		9A2F72C39DB705F7BB237887 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				B145D591649282D9EFFB8A2E /* AppAppearance.swift */,
 				73B3BB15AB496FF25F89FC8C /* AppRouter.swift */,
 				AC6810A19F50FACA91CB7DAD /* DemoData.swift */,
 				46E01DF37CD02C2EC6B10B54 /* RootView.swift */,
@@ -693,6 +696,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				48ED4A3DEE07FDCE55B65A86 /* AppAppearance.swift in Sources */,
 				D37811D39B01E9EFF3EB7946 /* AppGroup.swift in Sources */,
 				B31445B8AE5D3FBC0DA45A92 /* AppRouter.swift in Sources */,
 				33BAD0F7E742D7519B262FA2 /* BudgetEditors.swift in Sources */,
@@ -830,7 +834,6 @@
 		189548472D9988C9A76EBD2E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = TallyShareExtension/TallyShareExtension.entitlements;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = TallyShareExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -848,7 +851,6 @@
 		2FE59701204105165F916307 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = TallyShareExtension/TallyShareExtension.entitlements;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = TallyShareExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -867,7 +869,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = TallyWidgets/TallyWidgets.entitlements;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = TallyWidgets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -887,7 +888,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Tally/Tally.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -907,7 +907,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = TallyWidgets/TallyWidgets.entitlements;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = TallyWidgets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -990,7 +989,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Tally/Tally.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
