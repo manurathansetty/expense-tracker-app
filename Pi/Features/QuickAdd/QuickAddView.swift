@@ -52,15 +52,19 @@ struct QuickAddView: View {
                 }
                 .padding(.horizontal, DS.Spacing.lg)
                 .padding(.top, DS.Spacing.md)
-                .padding(.bottom, 100)
+                .padding(.bottom, DS.Spacing.xl)
             }
             .scrollDismissesKeyboard(.immediately)
-            .safeAreaInset(edge: .bottom) { saveButton }
             .navigationTitle("Add")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Add", action: attemptSave)
+                        .fontWeight(.semibold)
+                        .disabled(enteredMinor == 0)
                 }
             }
             .onAppear {
@@ -196,22 +200,6 @@ struct QuickAddView: View {
                         .fill(Color(.secondarySystemGroupedBackground))
                 )
         }
-    }
-
-    private var saveButton: some View {
-        Button(action: attemptSave) {
-            Text("Save")
-                .font(.headline)
-                .foregroundStyle(DS.onAccent)
-                .frame(maxWidth: .infinity)
-        }
-        .buttonStyle(.borderedProminent)
-        .controlSize(.large)
-        .tint(DS.accent)
-        .disabled(enteredMinor == 0)
-        .padding(.horizontal, DS.Spacing.lg)
-        .padding(.top, DS.Spacing.sm)
-        .padding(.bottom, DS.Spacing.xs)
     }
 
     // MARK: Save

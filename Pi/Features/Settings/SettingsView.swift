@@ -33,10 +33,10 @@ struct SettingsView: View {
                         TextField("e.g. Saving for a new MacBook", text: Binding(
                             get: { settings.monthlyGoal },
                             set: { settings.monthlyGoal = $0; LedgerService(context: context).save() }
-                        ), axis: .vertical)
-                        .lineLimit(1...3)
+                        ))
                         .focused($goalFocused)
                         .submitLabel(.done)
+                        .onSubmit { goalFocused = false }
                     }
                 } header: {
                     Text("This month's goal")
