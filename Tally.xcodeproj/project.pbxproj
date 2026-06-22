@@ -33,6 +33,7 @@
 		46408D69162D613BE28B16EC /* Commitment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91583EEE1AA7828A010EFF1C /* Commitment.swift */; };
 		49BA29CE3F85464BFB2554B7 /* ModelContainerProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20FDB0117B5079433F989A15 /* ModelContainerProvider.swift */; };
 		49E0A9A7BC0441926EA37BA7 /* SeedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A62DDA18918EEDB3642C6884 /* SeedData.swift */; };
+		4C5C05875584219CD382F790 /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6810A19F50FACA91CB7DAD /* DemoData.swift */; };
 		4E29FC299C67D123080E8E22 /* Money.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76ED7812CF6E75E580E87199 /* Money.swift */; };
 		5149BA01594FFCCB35B6471F /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515C5E1A0C240BC1C75BF9A4 /* Category.swift */; };
 		534BE549D7AB616920AD4F73 /* EditExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A562C8F41AAC2F9F5C622EA7 /* EditExpenseView.swift */; };
@@ -162,6 +163,7 @@
 		A562C8F41AAC2F9F5C622EA7 /* EditExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditExpenseView.swift; sourceTree = "<group>"; };
 		A62DDA18918EEDB3642C6884 /* SeedData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedData.swift; sourceTree = "<group>"; };
 		AA36E4315DAD7A2DDBF760A6 /* BudgetEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetEngine.swift; sourceTree = "<group>"; };
+		AC6810A19F50FACA91CB7DAD /* DemoData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
 		AEC8C115A6DE15EE3D16F5AF /* BudgetSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetSettings.swift; sourceTree = "<group>"; };
 		B94715B2DE1EB4C456E53F17 /* ShareConfirmView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareConfirmView.swift; sourceTree = "<group>"; };
 		BD07A89C9EF367D0B3BF4C56 /* TallyTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TallyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -331,6 +333,7 @@
 			isa = PBXGroup;
 			children = (
 				73B3BB15AB496FF25F89FC8C /* AppRouter.swift */,
+				AC6810A19F50FACA91CB7DAD /* DemoData.swift */,
 				46E01DF37CD02C2EC6B10B54 /* RootView.swift */,
 				C459C89EA7705BE5561E7FB8 /* TallyApp.swift */,
 			);
@@ -661,6 +664,7 @@
 				912B87285179B1008854AC68 /* Color+Hex.swift in Sources */,
 				46408D69162D613BE28B16EC /* Commitment.swift in Sources */,
 				7AC9BB553681EF1A13852C64 /* Components.swift in Sources */,
+				4C5C05875584219CD382F790 /* DemoData.swift in Sources */,
 				2F8D7E23FD43E10C57619BF3 /* DesignSystem.swift in Sources */,
 				534BE549D7AB616920AD4F73 /* EditExpenseView.swift in Sources */,
 				AD1474A161775D56356C26CC /* Enums.swift in Sources */,

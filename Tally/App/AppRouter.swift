@@ -16,6 +16,19 @@ final class AppRouter {
     /// Text handed in by the share extension / Shortcuts to prefill quick-add.
     var pendingMessageText: String?
 
+    init() {
+        // Dev affordance: launch into a specific tab for screenshots.
+        switch ProcessInfo.processInfo.environment["TALLY_TAB"] {
+        case "insights": selectedTab = .insights
+        case "budget": selectedTab = .budget
+        case "settings": selectedTab = .settings
+        default: break
+        }
+        if ProcessInfo.processInfo.environment["TALLY_QUICKADD"] == "1" {
+            showQuickAdd = true
+        }
+    }
+
     func openQuickAdd(prefillingMessage text: String? = nil) {
         pendingMessageText = text
         showQuickAdd = true
