@@ -10,7 +10,7 @@ struct UpcomingDuesCard: View {
     private var hasOverdue: Bool {
         payments.contains { RecurringEngine.daysUntil($0.nextDueDate, now: .now) < 0 }
     }
-    private var tint: Color { hasOverdue ? Color(hex: "FF375F") : Color(hex: "FF9F0A") }
+    private var tint: Color { hasOverdue ? DS.negative : DS.warning }
 
     var body: some View {
         VStack(alignment: .leading, spacing: DS.Spacing.md) {
@@ -66,6 +66,6 @@ struct UpcomingDuesCard: View {
 
     private func dueColor(_ payment: RecurringPayment) -> Color {
         RecurringEngine.daysUntil(payment.nextDueDate, now: .now) < 0
-            ? Color(hex: "FF375F") : Color(hex: "FF9F0A")
+            ? DS.negative : DS.warning
     }
 }

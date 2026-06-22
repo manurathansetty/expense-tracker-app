@@ -24,7 +24,7 @@ struct RecurringView: View {
                             LedgerService(context: context).markRecurringPaid(payment)
                             Haptics.success()
                         } label: { Label("Paid", systemImage: "checkmark") }
-                        .tint(.green)
+                        .tint(DS.positive)
                     }
             }
             .onDelete(perform: delete)
@@ -33,6 +33,7 @@ struct RecurringView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button { showAdd = true } label: { Image(systemName: "plus") }
+                    .accessibilityLabel("Add recurring payment")
             }
         }
         .sheet(isPresented: $showAdd) { EditRecurringView(payment: nil) }
@@ -40,6 +41,7 @@ struct RecurringView: View {
     }
 
     private func delete(_ offsets: IndexSet) {
+        Haptics.warning()
         for index in offsets { context.delete(payments[index]) }
         let service = LedgerService(context: context)
         service.save()
@@ -69,8 +71,8 @@ struct RecurringRow: View {
 
     private var dueColor: Color {
         let days = RecurringEngine.daysUntil(payment.nextDueDate, now: .now)
-        if days < 0 { return Color(hex: "FF375F") }
-        if days <= 5 { return Color(hex: "FF9F0A") }
+        if days < 0 { return DS.negative }
+        if days <= 5 { return DS.warning }
         return .secondary
     }
 }

@@ -6,7 +6,7 @@ enum AppGroup {
     /// `.entitlements` file.
     static let identifier = "group.ai.pageloop.pi"
 
-    /// Custom URL scheme used for deep links (e.g. `tally://add`).
+    /// Custom URL scheme used for deep links (e.g. `pi://add`).
     static let urlScheme = "pi"
 
     /// `UserDefaults` suite shared across targets (used for the widget snapshot).

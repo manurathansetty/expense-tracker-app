@@ -8,9 +8,12 @@ struct LedgerView: View {
 
     @Query(sort: \Expense.date, order: .reverse) private var expenses: [Expense]
     @Query private var settingsList: [BudgetSettings]
+    @Query private var commitments: [Commitment]
     @Query private var recurringPayments: [RecurringPayment]
 
     @State private var searchText = ""
+
+    private var summary: BudgetSummary { LedgerService(context: context).currentSummary() }
 
     private var upcomingDues: [RecurringPayment] {
         let now = Date.now
@@ -44,6 +47,14 @@ struct LedgerView: View {
     var body: some View {
         NavigationStack {
             List {
+                if (settings?.monthlyIncomeMinor ?? 0) > 0 || summary.spentThisMonthMinor > 0 {
+                    Section {
+                        SafeToSpendBanner(summary: summary, currencyCode: settings?.currencyCode ?? "INR")
+                            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                            .listRowBackground(Color.clear)
+                    }
+                }
+
                 if !upcomingDues.isEmpty {
                     Section {
                         UpcomingDuesCard(payments: upcomingDues)
@@ -83,6 +94,7 @@ struct LedgerView: View {
     }
 
     private func delete(in section: DaySection, offsets: IndexSet) {
+        Haptics.warning()
         let service = LedgerService(context: context)
         for index in offsets {
             service.delete(section.expenses[index])
@@ -156,7 +168,7 @@ struct SafeToSpendBanner: View {
                 .monospacedDigit()
                 .contentTransition(.numericText())
                 .animation(DS.spring, value: summary.safeToSpendMinor)
-                .foregroundStyle(summary.safeToSpendMinor < 0 ? Color(hex: "FF375F") : .primary)
+                .foregroundStyle(summary.safeToSpendMinor < 0 ? DS.negative : .primary)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
 
@@ -180,7 +192,7 @@ struct SafeToSpendBanner: View {
                     Spacer()
                     if summary.isPaceOver {
                         Label("Over pace", systemImage: "exclamationmark.triangle.fill")
-                            .foregroundStyle(Color(hex: "FF9F0A"))
+                            .foregroundStyle(DS.warning)
                     }
                 }
                 .font(.caption)

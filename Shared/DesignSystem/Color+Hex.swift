@@ -26,7 +26,7 @@ extension Color {
     }
 
     /// A small curated palette used by the color pickers for themes and people.
-    static let tallyPalette: [String] = [
+    static let piPalette: [String] = [
         "FF6B6B", "FF9F0A", "FFD60A", "34C759", "30B0C7",
         "0A84FF", "5E5CE6", "BF5AF2", "FF2D55", "FF375F",
         "8E8E93", "AF52DE", "64D2FF", "30D158", "FF9500",

@@ -35,12 +35,18 @@ enum DS {
         static let pill: CGFloat = 999
     }
 
+    /// Semantic status colors — single source of truth (reused by call sites and
+    /// by `health(forFraction:)`).
+    static let positive = Color(hex: "34C759") // green
+    static let warning = Color(hex: "FF9F0A")  // amber
+    static let negative = Color(hex: "FF375F") // red
+
     /// Semantic colors for budget health.
     static func health(forFraction fraction: Double) -> Color {
         switch fraction {
-        case ..<0.75: return Color(hex: "34C759") // green
-        case ..<1.0: return Color(hex: "FF9F0A")  // amber
-        default: return Color(hex: "FF375F")       // red
+        case ..<0.75: return positive
+        case ..<1.0: return warning
+        default: return negative
         }
     }
 

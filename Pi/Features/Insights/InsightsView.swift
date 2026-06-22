@@ -124,7 +124,7 @@ struct InsightsView: View {
                         Text(Money(minorUnits: savedThisMonthMinor, currencyCode: currencyCode).formatted())
                             .font(.headline)
                             .monospacedDigit()
-                            .foregroundStyle(savedThisMonthMinor >= 0 ? Color(hex: "34C759") : Color(hex: "FF375F"))
+                            .foregroundStyle(savedThisMonthMinor >= 0 ? DS.positive : DS.negative)
                     }
                     ForEach(savingsRecords) { record in
                         HStack {
@@ -132,7 +132,7 @@ struct InsightsView: View {
                             Spacer()
                             Text(record.savedMoney.formatted())
                                 .monospacedDigit()
-                                .foregroundStyle(record.savedMinor >= 0 ? Color(hex: "34C759") : Color(hex: "FF375F"))
+                                .foregroundStyle(record.savedMinor >= 0 ? DS.positive : DS.negative)
                         }
                     }
                 } header: {
@@ -153,7 +153,7 @@ struct InsightsView: View {
                                 Text(payee.name)
                                 Spacer()
                                 Text(Money(minorUnits: payee.netBalanceMinor, currencyCode: currencyCode).formatted())
-                                    .foregroundStyle(payee.netBalanceMinor >= 0 ? Color(hex: "34C759") : Color(hex: "FF375F"))
+                                    .foregroundStyle(payee.netBalanceMinor >= 0 ? DS.positive : DS.negative)
                             }
                         }
                     }

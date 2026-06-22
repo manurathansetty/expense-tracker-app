@@ -114,7 +114,7 @@ struct BudgetView: View {
                             if commitment.kind == .family {
                                 Text("Family set-aside")
                                     .font(.caption2.weight(.semibold))
-                                    .foregroundStyle(Color(hex: "FF375F"))
+                                    .foregroundStyle(DS.negative)
                             } else {
                                 Text(commitment.kind.label)
                                     .font(.caption2).foregroundStyle(.secondary)
@@ -147,10 +147,10 @@ struct BudgetView: View {
             if summary.carryoverDeficitMinor > 0 {
                 LabeledContent {
                     Text("− " + Money(minorUnits: summary.carryoverDeficitMinor, currencyCode: currencyCode).formatted())
-                        .foregroundStyle(Color(hex: "FF375F"))
+                        .foregroundStyle(DS.negative)
                 } label: {
                     Label("Lag from last month", systemImage: "arrow.uturn.forward")
-                        .foregroundStyle(Color(hex: "FF375F"))
+                        .foregroundStyle(DS.negative)
                 }
             }
             LabeledContent {
@@ -240,7 +240,7 @@ struct BudgetView: View {
                 value: Money(minorUnits: max(0, summary.safeToSpendMinor), currencyCode: currencyCode).formatted())
             LabeledContent {
                 Text(Money(minorUnits: summary.projectedSpendMinor, currencyCode: currencyCode).formatted())
-                    .foregroundStyle(summary.isPaceOver ? Color(hex: "FF375F") : .secondary)
+                    .foregroundStyle(summary.isPaceOver ? DS.negative : .secondary)
             } label: {
                 Text("Projected month-end")
             }
@@ -250,6 +250,7 @@ struct BudgetView: View {
     // MARK: Actions
 
     private func deleteCommitment(_ offsets: IndexSet) {
+        Haptics.warning()
         for index in offsets { context.delete(commitments[index]) }
         saveAndRefresh()
     }

@@ -9,7 +9,6 @@ struct RootView: View {
     @Environment(\.scenePhase) private var scenePhase
 
     @State private var writeCounterAtBackground = ExternalChange.current()
-    @State private var showFan = ProcessInfo.processInfo.environment["TALLY_FAN"] == "1"
 
     var body: some View {
         @Bindable var router = router
@@ -23,20 +22,11 @@ struct RootView: View {
             PiTabBar(
                 selected: $router.selectedTab,
                 onAdd: { Haptics.tap(); router.openQuickAdd() },
-                onLongPress: { Haptics.success(); showFan = true }
+                onAction: { handleFan($0) },
+                forceOpen: ProcessInfo.processInfo.environment["TALLY_FAN"] == "1"
             )
             .padding(.bottom, 2)
-
-            if showFan {
-                QuickActionFan(
-                    onSelect: { handleFan($0) },
-                    onDismiss: { showFan = false }
-                )
-                .transition(.opacity)
-                .zIndex(10)
-            }
         }
-        .animation(DS.spring, value: showFan)
         .ignoresSafeArea(.keyboard)
         .sheet(item: $router.activeSheet, content: sheetContent)
         .onChange(of: scenePhase) { _, phase in
@@ -93,7 +83,6 @@ struct RootView: View {
     }
 
     private func handleFan(_ action: FanAction) {
-        showFan = false
         switch action {
         case .expense: router.openQuickAdd()
         case .theme: router.activeSheet = .addTheme

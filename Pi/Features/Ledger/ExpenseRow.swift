@@ -48,6 +48,6 @@ struct ExpenseRow: View {
     }
 
     private var amountColor: Color {
-        expense.direction == .owedToMe ? Color(hex: "34C759") : .primary
+        expense.direction == .owedToMe ? DS.positive : .primary
     }
 }

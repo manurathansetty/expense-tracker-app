@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// App-wide navigation state. Drives the modal sheets (quick-add, recurring) and
-/// the selected tab, including deep links from the widget / `tally://add` URL.
+/// the selected tab, including deep links from the widget / `pi://add` URL.
 @Observable
 final class AppRouter {
     enum Tab: Hashable { case ledger, insights, budget, settings }
@@ -44,7 +44,7 @@ final class AppRouter {
         activeSheet = .quickAdd
     }
 
-    /// Handle deep links such as `tally://add` or `tally://add?text=...`.
+    /// Handle deep links such as `pi://add` or `pi://add?text=...`.
     func handle(url: URL) {
         guard url.scheme == AppGroup.urlScheme else { return }
         switch url.host {

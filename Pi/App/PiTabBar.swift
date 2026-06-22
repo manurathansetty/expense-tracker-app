@@ -1,18 +1,26 @@
 import SwiftUI
 
 /// Custom bottom bar: four tabs flanking a raised center ＋ that nests into the
-/// bar (the "bow"). Tap ＋ to quick-add; touch-and-hold to fan out more actions.
+/// bar (the "bow"). Tap ＋ to quick-add; touch-and-hold to reveal a fan and
+/// slide your finger onto an action, then release to pick it.
 struct PiTabBar: View {
     @Binding var selected: AppRouter.Tab
     var onAdd: () -> Void
-    var onLongPress: () -> Void
+    var onAction: (FanAction) -> Void
+    var forceOpen: Bool = false
+
+    @State private var fanOpen = false
+    @State private var selection: FanAction?
+
+    private let buttonSize: CGFloat = 74
+    private var isOpen: Bool { fanOpen || forceOpen }
 
     var body: some View {
         ZStack {
             HStack(spacing: 0) {
                 tab(.ledger, "Ledger", "list.bullet.rectangle.portrait")
                 tab(.insights, "Insights", "chart.pie.fill")
-                Spacer().frame(width: 78) // room for the center FAB
+                Spacer().frame(width: 78)
                 tab(.budget, "Budget", "target")
                 tab(.settings, "Settings", "gearshape.fill")
             }
@@ -52,7 +60,7 @@ struct PiTabBar: View {
 
     private var addButton: some View {
         ZStack {
-            Circle().fill(.bar).frame(width: 74, height: 74) // halo nests the FAB into the bar
+            Circle().fill(.bar).frame(width: buttonSize, height: buttonSize)
             Circle()
                 .fill(DS.accent)
                 .frame(width: 60, height: 60)
@@ -60,12 +68,112 @@ struct PiTabBar: View {
             Image(systemName: "plus")
                 .font(.title2.weight(.bold))
                 .foregroundStyle(DS.onAccent)
+                .rotationEffect(.degrees(isOpen ? 45 : 0))
         }
+        .scaleEffect(isOpen ? 0.92 : 1)
+        .overlay { fanOverlay }
         .contentShape(Circle())
-        .onTapGesture { onAdd() }
-        .onLongPressGesture(minimumDuration: 0.3) { onLongPress() }
+        .simultaneousGesture(
+            LongPressGesture(minimumDuration: 0.18).onEnded { _ in open() }
+        )
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 0, coordinateSpace: .local)
+                .onChanged { value in
+                    if fanOpen { updateSelection(value.location) }
+                }
+                .onEnded { value in
+                    if fanOpen {
+                        if let action = nearest(value.location) { onAction(action) }
+                        close()
+                    } else {
+                        onAdd()
+                    }
+                }
+        )
         .accessibilityLabel("Add")
-        .accessibilityHint("Adds an expense. Touch and hold for more actions.")
+        .accessibilityHint("Tap to add an expense. Touch and hold, then slide to a quick action.")
+    }
+
+    @ViewBuilder private var fanOverlay: some View {
+        if isOpen {
+            ZStack {
+                ForEach(Array(FanAction.allCases.enumerated()), id: \.element) { index, action in
+                    let p = position(index, FanAction.allCases.count)
+                    fanItem(action, highlighted: selection == action)
+                        .offset(x: p.x, y: p.y)
+                }
+            }
+            .allowsHitTesting(false)
+            .transition(.scale(scale: 0.5).combined(with: .opacity))
+        }
+    }
+
+    private func fanItem(_ action: FanAction, highlighted: Bool) -> some View {
+        VStack(spacing: 4) {
+            ZStack {
+                Circle()
+                    .fill(highlighted ? AnyShapeStyle(action.color) : AnyShapeStyle(.bar))
+                    .frame(width: highlighted ? 60 : 52, height: highlighted ? 60 : 52)
+                    .shadow(color: .black.opacity(0.15), radius: 6, y: 3)
+                Image(systemName: action.icon)
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(highlighted ? Color.white : action.color)
+            }
+            Text(action.title)
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(.primary)
+                .shadow(color: Color(.systemBackground), radius: 2)
+                .shadow(color: Color(.systemBackground), radius: 2)
+        }
+        .scaleEffect(highlighted ? 1.06 : 1)
+        .animation(DS.spring, value: highlighted)
+    }
+
+    // MARK: Geometry
+
+    private func position(_ index: Int, _ count: Int) -> CGPoint {
+        let spread = 104.0
+        let start = 90.0 + spread / 2
+        let step = count > 1 ? spread / Double(count - 1) : 0
+        let angle = (start - step * Double(index)) * .pi / 180
+        let radius: CGFloat = 88
+        return CGPoint(x: CGFloat(cos(angle)) * radius, y: -CGFloat(sin(angle)) * radius)
+    }
+
+    private func nearest(_ location: CGPoint) -> FanAction? {
+        let center = CGPoint(x: buttonSize / 2, y: buttonSize / 2)
+        let offset = CGPoint(x: location.x - center.x, y: location.y - center.y)
+        guard hypot(offset.x, offset.y) > 34 else { return nil } // near center = cancel
+        let actions = FanAction.allCases
+        var best: FanAction?
+        var bestDistance = CGFloat.greatestFiniteMagnitude
+        for (index, action) in actions.enumerated() {
+            let p = position(index, actions.count)
+            let distance = hypot(offset.x - p.x, offset.y - p.y)
+            if distance < bestDistance { bestDistance = distance; best = action }
+        }
+        return best
+    }
+
+    // MARK: State
+
+    private func open() {
+        guard !fanOpen else { return }
+        Haptics.success()
+        withAnimation(DS.spring) { fanOpen = true }
+    }
+
+    private func close() {
+        withAnimation(DS.spring) { fanOpen = false }
+        selection = nil
+    }
+
+    private func updateSelection(_ location: CGPoint) {
+        let next = nearest(location)
+        if next != selection {
+            selection = next
+            if next != nil { Haptics.select() }
+        }
     }
 }
 
@@ -95,69 +203,7 @@ enum FanAction: CaseIterable, Identifiable {
         case .expense: return Color(hex: "5E5CE6")
         case .theme: return Color(hex: "BF5AF2")
         case .person: return Color(hex: "30B0C7")
-        case .recurring: return Color(hex: "FF9F0A")
-        }
-    }
-}
-
-/// The "rainbow" fan revealed by holding the ＋ button. Dim background, items
-/// arc out above the button; tap one to act, tap the backdrop to dismiss.
-struct QuickActionFan: View {
-    let onSelect: (FanAction) -> Void
-    let onDismiss: () -> Void
-
-    @State private var shown = false
-    private let actions = FanAction.allCases
-
-    var body: some View {
-        ZStack {
-            Color.black.opacity(shown ? 0.32 : 0)
-                .ignoresSafeArea()
-                .onTapGesture { onDismiss() }
-
-            ZStack {
-                ForEach(Array(actions.enumerated()), id: \.element) { index, action in
-                    fanButton(action, index: index, count: actions.count)
-                }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-            .padding(.bottom, 92)
-        }
-        .onAppear { withAnimation(DS.spring) { shown = true } }
-    }
-
-    private func fanButton(_ action: FanAction, index: Int, count: Int) -> some View {
-        let spread = 120.0
-        let startAngle = 90.0 + spread / 2          // sweep from upper-left to upper-right
-        let step = count > 1 ? spread / Double(count - 1) : 0
-        let angle = (startAngle - step * Double(index)) * .pi / 180
-        let radius: CGFloat = 118
-        let dx = CGFloat(cos(angle)) * radius
-        let dy = -CGFloat(sin(angle)) * radius
-
-        return VStack(spacing: 5) {
-            ZStack {
-                Circle().fill(.bar).frame(width: 56, height: 56)
-                    .shadow(color: .black.opacity(0.15), radius: 6, y: 3)
-                Image(systemName: action.icon)
-                    .font(.title3.weight(.semibold))
-                    .foregroundStyle(action.color)
-            }
-            Text(action.title)
-                .font(.caption2.weight(.semibold))
-                .foregroundStyle(.primary)
-                .padding(.horizontal, 7)
-                .padding(.vertical, 2)
-                .background(Capsule().fill(.bar))
-        }
-        .scaleEffect(shown ? 1 : 0.4)
-        .opacity(shown ? 1 : 0)
-        .offset(x: shown ? dx : 0, y: shown ? dy : 0)
-        .animation(DS.spring.delay(Double(index) * 0.04), value: shown)
-        .contentShape(Rectangle())
-        .onTapGesture {
-            Haptics.tap()
-            onSelect(action)
+        case .recurring: return DS.warning
         }
     }
 }

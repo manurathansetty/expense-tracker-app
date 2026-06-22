@@ -35,6 +35,7 @@ struct ThemesView: View {
             ToolbarItem(placement: .topBarLeading) { EditButton() }
             ToolbarItem(placement: .topBarTrailing) {
                 Button { showAdd = true } label: { Image(systemName: "plus") }
+                    .accessibilityLabel("Add theme")
             }
         }
         .sheet(item: $editing) { category in
@@ -46,6 +47,7 @@ struct ThemesView: View {
     }
 
     private func delete(_ offsets: IndexSet) {
+        Haptics.warning()
         for index in offsets { context.delete(categories[index]) }
         try? context.save()
     }

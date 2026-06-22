@@ -29,6 +29,7 @@ struct PeopleView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button { showAdd = true } label: { Image(systemName: "plus") }
+                    .accessibilityLabel("Add person")
             }
         }
         .sheet(isPresented: $showAdd) {
@@ -37,6 +38,7 @@ struct PeopleView: View {
     }
 
     private func delete(_ offsets: IndexSet) {
+        Haptics.warning()
         for index in offsets { context.delete(payees[index]) }
         try? context.save()
     }
@@ -68,8 +70,8 @@ private struct PayeeRow: View {
 
     private var balanceColor: Color {
         let net = payee.netBalanceMinor
-        if net > 0 { return Color(hex: "34C759") }
-        if net < 0 { return Color(hex: "FF375F") }
+        if net > 0 { return DS.positive }
+        if net < 0 { return DS.negative }
         return .secondary
     }
 }
@@ -157,7 +159,7 @@ struct PayeeDetailView: View {
                     Spacer()
                     Text(Money(minorUnits: payee.netBalanceMinor).formatted())
                         .font(.headline)
-                        .foregroundStyle(payee.netBalanceMinor >= 0 ? Color(hex: "34C759") : Color(hex: "FF375F"))
+                        .foregroundStyle(payee.netBalanceMinor >= 0 ? DS.positive : DS.negative)
                 }
                 if !payee.note.isEmpty {
                     Text(payee.note).foregroundStyle(.secondary)
@@ -192,7 +194,7 @@ struct ColorSwatchPicker: View {
 
     var body: some View {
         LazyVGrid(columns: columns, spacing: 12) {
-            ForEach(Color.tallyPalette, id: \.self) { hex in
+            ForEach(Color.piPalette, id: \.self) { hex in
                 Circle()
                     .fill(Color(hex: hex))
                     .frame(width: 34, height: 34)
@@ -201,6 +203,7 @@ struct ColorSwatchPicker: View {
                             Image(systemName: "checkmark")
                                 .font(.caption.weight(.bold))
                                 .foregroundStyle(.white)
+                                .shadow(color: .black.opacity(0.45), radius: 1)
                         }
                     }
                     .onTapGesture {
