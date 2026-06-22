@@ -9,14 +9,14 @@ struct SettingsView: View {
     @State private var csvURL: URL?
     @State private var jsonURL: URL?
 
+    // Non-mutating: never insert during `body`. Seeded in `.task` / at launch.
     private var settings: BudgetSettings {
-        if let first = settingsList.first { return first }
-        let created = BudgetSettings()
-        context.insert(created)
-        return created
+        settingsList.first ?? BudgetSettings()
     }
 
-    private let currencies = ["INR", "USD", "EUR", "GBP", "JPY", "AUD", "CAD", "SGD", "AED"]
+    // Only currencies with 2 decimal minor units (Money assumes 100 minor units
+    // per major). JPY (0 decimals) and similar are intentionally excluded.
+    private let currencies = ["INR", "USD", "EUR", "GBP", "AUD", "CAD", "SGD", "AED"]
 
     var body: some View {
         NavigationStack {
@@ -77,6 +77,10 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Settings")
+            .task {
+                SeedData.ensureSettings(context)
+                try? context.save()
+            }
             .task(id: expenses.count) { regenerateExports() }
         }
     }

@@ -23,6 +23,12 @@ struct LogTransactionFromTextIntent: AppIntent {
             return .result(dialog: "I couldn't find an amount in that message.")
         }
 
+        // The automation logs silently rather than blocking, but we flag entries
+        // that breach the ceiling so the overspend is auditable in the app.
+        let service = LedgerService(context: context)
+        let breached = service.settings().enforceBlocker
+            && service.wouldBreachCeiling(addingMinor: minor, direction: parsed.direction)
+
         let expense = Expense(
             amountMinor: minor,
             currencyCode: parsed.currencyCode,
@@ -30,12 +36,15 @@ struct LogTransactionFromTextIntent: AppIntent {
             date: .now,
             direction: parsed.direction,
             source: .message,
-            rawMessage: text
+            rawMessage: text,
+            didOverrideBlocker: breached
         )
-        LedgerService(context: context).insert(expense)
+        service.insert(expense)
 
         let money = Money(minorUnits: minor, currencyCode: parsed.currencyCode)
-        return .result(dialog: "Logged \(money.formatted()).")
+        return .result(dialog: breached
+            ? "Logged \(money.formatted()) — you're now over your monthly limit."
+            : "Logged \(money.formatted()).")
     }
 }
 
@@ -58,17 +67,22 @@ struct AddExpenseIntent: AppIntent {
         let service = LedgerService(context: context)
         let settings = service.settings()
         let minor = Int((amount * Double(Money.minorUnitsPerMajor)).rounded())
+        let breached = settings.enforceBlocker
+            && service.wouldBreachCeiling(addingMinor: minor, direction: .paid)
 
         let expense = Expense(
             amountMinor: minor,
             currencyCode: settings.currencyCode,
             note: note,
-            source: .manual
+            source: .manual,
+            didOverrideBlocker: breached
         )
         service.insert(expense)
 
         let money = Money(minorUnits: minor, currencyCode: settings.currencyCode)
-        return .result(dialog: "Added \(money.formatted()).")
+        return .result(dialog: breached
+            ? "Added \(money.formatted()) — over your monthly limit."
+            : "Added \(money.formatted()).")
     }
 }
 

@@ -5,6 +5,9 @@ import SwiftData
 struct RootView: View {
     @Environment(AppRouter.self) private var router
     @Environment(\.modelContext) private var context
+    @Environment(\.scenePhase) private var scenePhase
+
+    @State private var writeCounterAtBackground = ExternalChange.current()
 
     var body: some View {
         @Bindable var router = router
@@ -27,6 +30,9 @@ struct RootView: View {
                     .tabItem { Label("Settings", systemImage: "gearshape.fill") }
                     .tag(AppRouter.Tab.settings)
             }
+            // Re-create the tab content (and its @Query fetches) only when another
+            // process wrote while we were backgrounded — preserves navigation otherwise.
+            .id(router.dataRefreshToken)
 
             QuickAddButton {
                 Haptics.tap()
@@ -37,6 +43,22 @@ struct RootView: View {
         .sheet(isPresented: $router.showQuickAdd) {
             QuickAddView(prefillMessage: router.pendingMessageText)
                 .onDisappear { router.pendingMessageText = nil }
+        }
+        .onChange(of: scenePhase) { _, phase in
+            switch phase {
+            case .background, .inactive:
+                writeCounterAtBackground = ExternalChange.current()
+            case .active:
+                // Recompute time-relative widget figures (handles day/month rollover).
+                LedgerService(context: context).refreshSnapshot()
+                // If another process wrote while we were away, force a re-fetch.
+                if ExternalChange.current() != writeCounterAtBackground {
+                    router.dataRefreshToken += 1
+                    writeCounterAtBackground = ExternalChange.current()
+                }
+            @unknown default:
+                break
+            }
         }
     }
 }

@@ -12,6 +12,8 @@ struct ShareConfirmView: View {
     @State private var direction: Direction = .paid
     @State private var currencyCode = Money.defaultCurrencyCode
     @State private var saved = false
+    @State private var showBlockerAlert = false
+    @State private var blockerMessage = ""
 
     var body: some View {
         NavigationStack {
@@ -44,11 +46,17 @@ struct ShareConfirmView: View {
                     Button("Cancel") { onClose() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save", action: save)
+                    Button("Save", action: attemptSave)
                         .disabled((Money.minorUnits(fromUserInput: amountText) ?? 0) == 0)
                 }
             }
             .onAppear(perform: prefill)
+            .alert("Over your limit", isPresented: $showBlockerAlert) {
+                Button("Cancel", role: .cancel) {}
+                Button("Spend anyway", role: .destructive) { commit(overriding: true) }
+            } message: {
+                Text(blockerMessage)
+            }
         }
         .tint(DS.accent)
     }
@@ -69,7 +77,23 @@ struct ShareConfirmView: View {
     }
 
     @MainActor
-    private func save() {
+    private func attemptSave() {
+        guard let minor = Money.minorUnits(fromUserInput: amountText), minor > 0 else { return }
+        let service = LedgerService(context: ModelContainerProvider.shared.mainContext)
+        let settings = service.settings()
+        if settings.enforceBlocker, service.wouldBreachCeiling(addingMinor: minor, direction: direction) {
+            let summary = service.currentSummary()
+            let over = (summary.spentThisMonthMinor + minor) - summary.ceilingMinor
+            let overMoney = Money(minorUnits: max(0, over), currencyCode: currencyCode)
+            blockerMessage = "This puts you \(overMoney.formatted()) over your monthly limit. Record it anyway?"
+            showBlockerAlert = true
+        } else {
+            commit(overriding: false)
+        }
+    }
+
+    @MainActor
+    private func commit(overriding: Bool) {
         guard let minor = Money.minorUnits(fromUserInput: amountText), minor > 0 else { return }
         let context = ModelContainerProvider.shared.mainContext
         let expense = Expense(
@@ -79,7 +103,8 @@ struct ShareConfirmView: View {
             date: .now,
             direction: direction,
             source: .shareSheet,
-            rawMessage: initialText.isEmpty ? nil : initialText
+            rawMessage: initialText.isEmpty ? nil : initialText,
+            didOverrideBlocker: overriding
         )
         LedgerService(context: context).insert(expense)
         saved = true

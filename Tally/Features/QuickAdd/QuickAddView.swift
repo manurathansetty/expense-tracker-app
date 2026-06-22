@@ -231,7 +231,8 @@ struct QuickAddView: View {
 
     private func attemptSave() {
         let service = LedgerService(context: context)
-        let enforce = settings?.enforceBlocker ?? false
+        // Default to the model's default (blocker ON) when the row isn't seeded yet.
+        let enforce = settings?.enforceBlocker ?? true
         if enforce, service.wouldBreachCeiling(addingMinor: enteredMinor, direction: direction) {
             Haptics.warning()
             showBlockerAlert = true

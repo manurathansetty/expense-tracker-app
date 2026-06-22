@@ -15,11 +15,11 @@ struct BudgetView: View {
     @State private var editingCommitment: Commitment?
     @State private var showAddCommitment = false
 
+    // Non-mutating: never insert during `body`. The persistent row is created
+    // once in `.task` below (and at app launch). The transient default only backs
+    // the brief first frame before seeding completes.
     private var settings: BudgetSettings {
-        if let first = settingsList.first { return first }
-        let created = BudgetSettings()
-        context.insert(created)
-        return created
+        settingsList.first ?? BudgetSettings()
     }
 
     private var currencyCode: String { settings.currencyCode }
@@ -50,6 +50,10 @@ struct BudgetView: View {
                 projectionSection
             }
             .navigationTitle("Budget")
+            .task {
+                SeedData.ensureSettings(context)
+                try? context.save()
+            }
             .sheet(isPresented: $showIncomeEditor) {
                 MoneyInputSheet(title: "Monthly Income", currencyCode: currencyCode,
                                 minor: settings.monthlyIncomeMinor) { newValue in

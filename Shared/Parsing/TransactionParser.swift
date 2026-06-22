@@ -20,7 +20,7 @@ enum TransactionParser {
     static func parse(_ text: String) -> ParsedTransaction {
         let lower = text.lowercased()
         let currency = detectCurrency(lower)
-        let amount = detectAmountMinor(in: text)
+        let amount = detectAmountMinor(in: text, looseIntegerAllowed: hasTransactionKeyword(lower))
         let direction = detectDirection(lower)
         let merchant = detectMerchant(in: text)
 
@@ -36,8 +36,11 @@ enum TransactionParser {
     // MARK: Currency
 
     private static func detectCurrency(_ lower: String) -> String {
-        if lower.contains("₹") || lower.contains("inr") || lower.contains("rs.")
-            || lower.range(of: #"\brs\b"#, options: .regularExpression) != nil {
+        // Match the rupee token "Rs"/"Rs." only at a word boundary (so "cars.com"
+        // or "burgers." don't count), either standalone or followed by an amount.
+        let rupeeToken = lower.range(of: #"(?:^|[^a-z])rs\.?\s*\d"#, options: .regularExpression) != nil
+            || lower.range(of: #"(?:^|[^a-z])rs\b"#, options: .regularExpression) != nil
+        if lower.contains("₹") || lower.contains("inr") || rupeeToken {
             return "INR"
         }
         if lower.contains("usd") || lower.contains("$") { return "USD" }
@@ -48,7 +51,7 @@ enum TransactionParser {
 
     // MARK: Amount
 
-    private static func detectAmountMinor(in text: String) -> Int? {
+    private static func detectAmountMinor(in text: String, looseIntegerAllowed: Bool) -> Int? {
         // Prefer a number that sits next to a currency token.
         let currencyPatterns = [
             #"(?:₹|rs\.?|inr|usd|\$|eur|€|gbp|£)\s*([0-9][0-9,]*(?:\.[0-9]{1,2})?)"#,
@@ -60,18 +63,26 @@ enum TransactionParser {
                 return minor
             }
         }
-        // Fallback: an amount following "for" / "of", or any decimal amount.
-        let loosePatterns = [
-            #"(?:for|of)\s+([0-9][0-9,]*(?:\.[0-9]{1,2})?)"#,
-            #"\b([0-9][0-9,]*\.[0-9]{2})\b"#,
-        ]
-        for pattern in loosePatterns {
-            if let captured = firstCapture(pattern, in: text, options: [.caseInsensitive]),
-               let minor = Money.minorUnits(fromUserInput: captured) {
-                return minor
-            }
+        // A decimal-shaped number always looks monetary.
+        if let captured = firstCapture(#"\b([0-9][0-9,]*\.[0-9]{2})\b"#, in: text),
+           let minor = Money.minorUnits(fromUserInput: captured) {
+            return minor
+        }
+        // A bare integer after "for"/"of" is only trusted when a transaction
+        // keyword anchors the intent — avoids picking up OTP windows / promo codes.
+        if looseIntegerAllowed,
+           let captured = firstCapture(#"(?:for|of)\s+([0-9][0-9,]*)"#, in: text, options: [.caseInsensitive]),
+           let minor = Money.minorUnits(fromUserInput: captured) {
+            return minor
         }
         return nil
+    }
+
+    private static func hasTransactionKeyword(_ lower: String) -> Bool {
+        let keywords = ["debited", "debit", "spent", "paid", "sent", "withdrawn",
+                        "purchase", "payment", "deducted", "credited", "credit",
+                        "received", "refund", "deposit"]
+        return keywords.contains { lower.contains($0) }
     }
 
     // MARK: Direction

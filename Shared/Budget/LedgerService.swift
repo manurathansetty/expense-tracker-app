@@ -77,20 +77,25 @@ struct LedgerService {
     @discardableResult
     func insert(_ expense: Expense, now: Date = .now) -> Expense {
         context.insert(expense)
-        try? context.save()
-        refreshSnapshot(now: now)
+        commit(now: now)
         return expense
     }
 
     func delete(_ expense: Expense, now: Date = .now) {
         context.delete(expense)
-        try? context.save()
-        refreshSnapshot(now: now)
+        commit(now: now)
     }
 
     func save(now: Date = .now) {
+        commit(now: now)
+    }
+
+    /// Persist, refresh the widget snapshot, and bump the cross-process change
+    /// counter so other processes (and the foregrounding app) know to refresh.
+    private func commit(now: Date) {
         try? context.save()
         refreshSnapshot(now: now)
+        ExternalChange.bump()
     }
 
     // MARK: Widget snapshot

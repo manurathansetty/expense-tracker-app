@@ -45,17 +45,27 @@ final class ShareViewController: UIViewController {
         let urlType = UTType.url.identifier
 
         for provider in providers where provider.hasItemConformingToTypeIdentifier(textType) {
-            provider.loadItem(forTypeIdentifier: textType, options: nil) { data, _ in
-                completion((data as? String) ?? "")
+            // Providers may vend plain text as String, NSAttributedString, or raw
+            // UTF-8 Data depending on the source app — handle all of them.
+            provider.loadItem(forTypeIdentifier: textType, options: nil) { item, _ in
+                completion(Self.string(from: item))
             }
             return
         }
         for provider in providers where provider.hasItemConformingToTypeIdentifier(urlType) {
-            provider.loadItem(forTypeIdentifier: urlType, options: nil) { data, _ in
-                completion((data as? URL)?.absoluteString ?? "")
+            provider.loadItem(forTypeIdentifier: urlType, options: nil) { item, _ in
+                completion((item as? URL)?.absoluteString ?? Self.string(from: item))
             }
             return
         }
         completion("")
+    }
+
+    private static func string(from item: NSSecureCoding?) -> String {
+        if let s = item as? String { return s }
+        if let a = item as? NSAttributedString { return a.string }
+        if let d = item as? Data, let s = String(data: d, encoding: .utf8) { return s }
+        if let u = item as? URL { return u.absoluteString }
+        return ""
     }
 }

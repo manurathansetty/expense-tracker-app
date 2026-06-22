@@ -9,6 +9,10 @@ final class AppRouter {
     var selectedTab: Tab = .ledger
     var showQuickAdd = false
 
+    /// Bumped when the app detects writes made by another process while it was
+    /// backgrounded; used to force `@Query`-backed views to re-fetch.
+    var dataRefreshToken = 0
+
     /// Text handed in by the share extension / Shortcuts to prefill quick-add.
     var pendingMessageText: String?
 

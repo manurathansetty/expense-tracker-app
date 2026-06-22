@@ -14,3 +14,21 @@ enum AppGroup {
         UserDefaults(suiteName: identifier) ?? .standard
     }
 }
+
+/// A monotonically increasing counter, stored in the shared App Group, that any
+/// process bumps after it writes to the store. The app reads it on foreground to
+/// detect writes made while it was backgrounded (by the share extension or the
+/// Shortcuts/Siri intents) and refresh its live `@Query` views accordingly —
+/// SwiftData does not merge cross-process changes automatically.
+enum ExternalChange {
+    private static let key = "tally.writeCounter"
+
+    static func bump() {
+        let next = AppGroup.defaults.integer(forKey: key) + 1
+        AppGroup.defaults.set(next, forKey: key)
+    }
+
+    static func current() -> Int {
+        AppGroup.defaults.integer(forKey: key)
+    }
+}
