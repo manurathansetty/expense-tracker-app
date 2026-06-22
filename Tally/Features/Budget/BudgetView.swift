@@ -102,7 +102,7 @@ struct BudgetView: View {
                         VStack(alignment: .leading, spacing: 1) {
                             Text(commitment.name).foregroundStyle(.primary)
                             if commitment.kind == .family {
-                                Text("Family commitment")
+                                Text("Family set-aside")
                                     .font(.caption2.weight(.semibold))
                                     .foregroundStyle(Color(hex: "FF375F"))
                             } else {
@@ -119,10 +119,10 @@ struct BudgetView: View {
             .onDelete(perform: deleteCommitment)
 
             Button { showAddCommitment = true } label: {
-                Label("Add commitment", systemImage: "plus.circle.fill")
+                Label("Add set-aside", systemImage: "plus.circle.fill")
             }
         } header: {
-            Text("Commitments")
+            Text("Set-asides")
         } footer: {
             Text("Fixed monthly set-asides (family, rent, EMI, savings). Subtracted from income before any spending.")
         }
@@ -132,7 +132,7 @@ struct BudgetView: View {
         Section("Expendable") {
             LabeledContent("Income",
                 value: Money(minorUnits: settings.monthlyIncomeMinor, currencyCode: currencyCode).formatted())
-            LabeledContent("Committed",
+            LabeledContent("Set aside",
                 value: "− " + Money(minorUnits: committedMinor, currencyCode: currencyCode).formatted())
             LabeledContent {
                 Text(Money(minorUnits: summary.expendableMinor, currencyCode: currencyCode).formatted())

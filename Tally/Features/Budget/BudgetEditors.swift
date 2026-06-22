@@ -85,7 +85,7 @@ struct EditCommitmentView: View {
                 }
             }
             .scrollContentBackground(.hidden)
-            .navigationTitle(commitment == nil ? "New Commitment" : "Edit Commitment")
+            .navigationTitle(commitment == nil ? "New Set-aside" : "Edit Set-aside")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
