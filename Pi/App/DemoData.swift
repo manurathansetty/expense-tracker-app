@@ -107,6 +107,23 @@ enum DemoData {
             }
         }
 
+        // A sample trip with a few shared expenses.
+        let trip = Trip(name: "Goa 2026", currencyCode: "INR")
+        context.insert(trip)
+        let tripMembers = [
+            TripMember(name: "Arjun", colorHex: "0A84FF"),
+            TripMember(name: "Priya", colorHex: "FF2D55"),
+            TripMember(name: "Manu", colorHex: "30D158"),
+        ]
+        tripMembers.forEach { $0.trip = trip; context.insert($0) }
+        let ids = tripMembers.map(\.id)
+        let tripExpenses = [
+            TripExpense(title: "Beach hotel", amountMinor: 1_200_000, payerID: ids[0], participantIDs: ids),
+            TripExpense(title: "Seafood dinner", amountMinor: 450_000, payerID: ids[1], participantIDs: ids),
+            TripExpense(title: "Scooter rental", amountMinor: 90_000, payerID: ids[2], participantIDs: [ids[0], ids[2]]),
+        ]
+        tripExpenses.forEach { $0.trip = trip; context.insert($0) }
+
         // Optional: push this month over budget to preview the "quota used" state.
         if ProcessInfo.processInfo.environment["TALLY_OVER"] == "1" {
             let big = Expense(

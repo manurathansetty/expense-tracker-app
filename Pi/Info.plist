@@ -30,6 +30,8 @@
 	</array>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Take a photo of a bill or receipt to attach it to a shared trip expense.</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

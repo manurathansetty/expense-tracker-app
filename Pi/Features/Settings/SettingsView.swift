@@ -41,6 +41,16 @@ struct SettingsView: View {
                     Text("Shown as your home screen title — a reminder of what you're working toward.")
                 }
 
+                Section {
+                    NavigationLink {
+                        TripsView()
+                    } label: { Label("Trips", systemImage: "airplane") }
+                } header: {
+                    Text("Group trips")
+                } footer: {
+                    Text("Split shared expenses with friends and settle up — kept separate from your personal budget.")
+                }
+
                 Section("Organize") {
                     NavigationLink {
                         ThemesView()
