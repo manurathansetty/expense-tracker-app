@@ -30,12 +30,22 @@ struct BudgetView: View {
         let monthOutflow = expenses
             .filter { BudgetEngine.isInCurrentMonth($0.date, now: now, calendar: .current) && $0.direction.isOutflow }
             .reduce(0) { $0 + $1.amountMinor }
+        let prev = BudgetEngine.previousMonthInterval(now: now, calendar: .current)
+        let prevOutflow = expenses
+            .filter { $0.date >= prev.start && $0.date < prev.end && $0.direction.isOutflow }
+            .reduce(0) { $0 + $1.amountMinor }
+        let lag = BudgetEngine.carryoverDeficit(
+            prevMonthOutflowMinor: prevOutflow,
+            expendableMinor: max(0, settings.monthlyIncomeMinor - committedMinor),
+            enabled: settings.carryOverOverspend
+        )
         return BudgetEngine.summary(
             incomeMinor: settings.monthlyIncomeMinor,
             committedMinor: committedMinor,
             monthOutflowMinor: monthOutflow,
             ceilingOverrideMinor: settings.monthlyCeilingMinor,
-            now: now
+            now: now,
+            carryoverDeficitMinor: lag
         )
     }
 
@@ -134,17 +144,34 @@ struct BudgetView: View {
                 value: Money(minorUnits: settings.monthlyIncomeMinor, currencyCode: currencyCode).formatted())
             LabeledContent("Set aside",
                 value: "− " + Money(minorUnits: committedMinor, currencyCode: currencyCode).formatted())
+            if summary.carryoverDeficitMinor > 0 {
+                LabeledContent {
+                    Text("− " + Money(minorUnits: summary.carryoverDeficitMinor, currencyCode: currencyCode).formatted())
+                        .foregroundStyle(Color(hex: "FF375F"))
+                } label: {
+                    Label("Lag from last month", systemImage: "arrow.uturn.forward")
+                        .foregroundStyle(Color(hex: "FF375F"))
+                }
+            }
             LabeledContent {
-                Text(Money(minorUnits: summary.expendableMinor, currencyCode: currencyCode).formatted())
+                Text(Money(minorUnits: summary.carryoverDeficitMinor > 0 ? summary.ceilingMinor : summary.expendableMinor,
+                           currencyCode: currencyCode).formatted())
                     .font(.headline)
             } label: {
-                Text("Expendable income").font(.headline)
+                Text(summary.carryoverDeficitMinor > 0 ? "Available this month" : "Expendable income")
+                    .font(.headline)
             }
         }
     }
 
     private var blockerSection: some View {
         Section {
+            Toggle(isOn: Binding(
+                get: { settings.carryOverOverspend },
+                set: { settings.carryOverOverspend = $0; saveAndRefresh() }
+            )) {
+                Label("Carry over overspend", systemImage: "arrow.uturn.forward")
+            }
             Toggle(isOn: Binding(
                 get: { settings.enforceBlocker },
                 set: { settings.enforceBlocker = $0; saveAndRefresh() }

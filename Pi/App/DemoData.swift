@@ -86,6 +86,26 @@ enum DemoData {
             context.insert(payment)
         }
 
+        // Last month: a small overspend (₹42,000 vs ₹35,000 expendable) so the
+        // savings history shows a deficit and the lag-payment carries ₹7,000 in.
+        let cal = Calendar.current
+        if let lastMonth = cal.date(byAdding: .month, value: -1, to: now) {
+            let comps = cal.dateComponents([.year, .month], from: lastMonth)
+            let day = cal.date(from: DateComponents(year: comps.year, month: comps.month, day: 15, hour: 12)) ?? lastMonth
+            let lastMonthSamples: [(Int, String, String)] = [
+                (1_800_000, "Rent advance", "Home & Rent"),
+                (1_500_000, "Festival shopping", "Shopping"),
+                (900_000, "Dining out", "Food & Drink"),
+            ]
+            for (amount, note, cat) in lastMonthSamples {
+                let expense = Expense(
+                    amountMinor: amount, currencyCode: "INR", note: note,
+                    date: day, direction: .paid, source: .manual, category: category(cat)
+                )
+                context.insert(expense)
+            }
+        }
+
         try? context.save()
     }
 }

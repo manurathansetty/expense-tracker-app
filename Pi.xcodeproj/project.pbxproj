@@ -46,6 +46,7 @@
 		6FCBAC4EFAB530FC1F5FF67E /* Commitment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02752B251ED06F07BD79D56 /* Commitment.swift */; };
 		705F0609284A3FFA8309BEDB /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B239FE6E1B17F194B412A6 /* DesignSystem.swift */; };
 		7344E6D6BC7214C80E4276F0 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0FFEAA8A43C6B7EB344B806 /* AppRouter.swift */; };
+		76DF7C066B8DF3A775D672C7 /* SavingsRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2974C9B52F482034C64EBCA2 /* SavingsRecord.swift */; };
 		786144AFC2338ACB8B0F395D /* EditExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A00DE7F68E3C9B117ECC1B6 /* EditExpenseView.swift */; };
 		7AD36623CAA934B0004C827C /* Expense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815C132004AADE79246A5116 /* Expense.swift */; };
 		7F300B09C5CDE8DDBA24EDFE /* UpcomingDuesCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6A5694295752DFEC7A731A9 /* UpcomingDuesCard.swift */; };
@@ -66,6 +67,7 @@
 		9F306B4F752CAA669530E4E7 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F86CAFADC9F9BE9F1B6D6A0 /* Haptics.swift */; };
 		A1FE6D63949C4D7AE2AD1AB2 /* BudgetEditors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43AD591095C0858B5CC378AB /* BudgetEditors.swift */; };
 		A4449D552CB9C3C9A2E99177 /* BudgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6689DD4BD21AADE12DB5BC3 /* BudgetView.swift */; };
+		A78AFE96F473243437D35D7E /* SavingsRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2974C9B52F482034C64EBCA2 /* SavingsRecord.swift */; };
 		B372C070AC890BCE598330B0 /* SeedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FCA20B2A89073DE8E74335B /* SeedData.swift */; };
 		B45BF2879BE01937B414676E /* RecurringEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2EC34FB9D677923A5C26EE3 /* RecurringEngine.swift */; };
 		B4F7FC300E8593A25978C0B8 /* BudgetEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72FB5022E38DCA8477776532 /* BudgetEngine.swift */; };
@@ -85,6 +87,7 @@
 		D2A058A5B47AD2037C713584 /* BudgetEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72FB5022E38DCA8477776532 /* BudgetEngine.swift */; };
 		D8D3C483040915985E641BBA /* SeedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FCA20B2A89073DE8E74335B /* SeedData.swift */; };
 		D8F475587A42CF4FB062B54A /* RecurringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435592B9353DF6811992A49D /* RecurringView.swift */; };
+		D8F6CF02089E3809FB64014A /* SavingsRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2974C9B52F482034C64EBCA2 /* SavingsRecord.swift */; };
 		D960A4506703991E4A54C512 /* BudgetEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EEE12A5A96A5381298676C8 /* BudgetEngineTests.swift */; };
 		DDA4B581CBF84DF5B462673B /* LedgerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14941B84B216CFB6DE6E29C6 /* LedgerService.swift */; };
 		E1034848B10DB3132D2F1DA3 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952A482B25EF7D536166FE2A /* SettingsView.swift */; };
@@ -145,12 +148,13 @@
 		04E615903AE4F6F5A67CA660 /* PiTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = PiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0548EB34D60C3D1D4C8C27AB /* SharedSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedSnapshot.swift; sourceTree = "<group>"; };
 		05886E3C6B84E564EA8FAF2B /* PeopleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleView.swift; sourceTree = "<group>"; };
-		0626CBA767E8B1CDE2EFB42B /* Pi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0626CBA767E8B1CDE2EFB42B /* Pi.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Pi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0EEE12A5A96A5381298676C8 /* BudgetEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetEngineTests.swift; sourceTree = "<group>"; };
 		1038E9BFB581111A7DF8A423 /* InsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsView.swift; sourceTree = "<group>"; };
 		125072246841304BD08E2092 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		14941B84B216CFB6DE6E29C6 /* LedgerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LedgerService.swift; sourceTree = "<group>"; };
 		1D3DCDA01DE071F6B774536A /* ThemesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesView.swift; sourceTree = "<group>"; };
+		2974C9B52F482034C64EBCA2 /* SavingsRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingsRecord.swift; sourceTree = "<group>"; };
 		3501213BF53809CE117ADA58 /* Exporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Exporter.swift; sourceTree = "<group>"; };
 		35884FF95EEE126D384A4934 /* TransactionParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionParser.swift; sourceTree = "<group>"; };
 		38F9A503070C80E4CDAB4CE6 /* TransactionParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionParserTests.swift; sourceTree = "<group>"; };
@@ -162,7 +166,7 @@
 		44119CD11EDB6513742EFF14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		4C22D7B76F257FDDD9E16961 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
 		51F5CF1BB8998F05630965CB /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
-		534D1AA0581E88CEE84A3D6B /* PiWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PiWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		534D1AA0581E88CEE84A3D6B /* PiWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = PiWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		56606A9FEC81C4A1B71CAB5A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		57B239FE6E1B17F194B412A6 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
 		5E1CFEC2A7290A1DD11BC221 /* QuickAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddView.swift; sourceTree = "<group>"; };
@@ -181,7 +185,7 @@
 		952A482B25EF7D536166FE2A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		95784D062E59097FB4881DCD /* TodayWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayWidget.swift; sourceTree = "<group>"; };
 		A3657C10613E4699623F7850 /* Payee.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Payee.swift; sourceTree = "<group>"; };
-		B736B79840BD49D0111BA7F8 /* PiShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PiShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B736B79840BD49D0111BA7F8 /* PiShareExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = PiShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B757153E55B33361D444E1C9 /* AppGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroup.swift; sourceTree = "<group>"; };
 		BC0F62F090CC74A119FD80EF /* DemoData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
 		BEE0CC5837BDB1397964D23D /* NotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduler.swift; sourceTree = "<group>"; };
@@ -468,6 +472,7 @@
 				815C132004AADE79246A5116 /* Expense.swift */,
 				A3657C10613E4699623F7850 /* Payee.swift */,
 				3D51337CA84471E8E99E76AC /* RecurringPayment.swift */,
+				2974C9B52F482034C64EBCA2 /* SavingsRecord.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -570,12 +575,15 @@
 						ProvisioningStyle = Automatic;
 					};
 					72416FE8D69F2AFDE682D02F = {
+						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 					98A72841A41D66AB9BF03985 = {
+						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 					A892DB4C39D7590437639522 = {
+						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -646,6 +654,7 @@
 				B9C60D8D778FC992DA640CC6 /* Payee.swift in Sources */,
 				C93D12A3BD4A405944D07F20 /* RecurringEngine.swift in Sources */,
 				218E1C8404D94180CFB164DB /* RecurringPayment.swift in Sources */,
+				76DF7C066B8DF3A775D672C7 /* SavingsRecord.swift in Sources */,
 				B372C070AC890BCE598330B0 /* SeedData.swift in Sources */,
 				3C065558E93BA1AAC89DAB64 /* ShareConfirmView.swift in Sources */,
 				F00DD4EE986E95A8C8EF4821 /* ShareViewController.swift in Sources */,
@@ -676,6 +685,7 @@
 				BB0571CA55C44E4EBD70ED36 /* PiWidgetsBundle.swift in Sources */,
 				B45BF2879BE01937B414676E /* RecurringEngine.swift in Sources */,
 				BD1FE4C851BFE9473CBA043E /* RecurringPayment.swift in Sources */,
+				A78AFE96F473243437D35D7E /* SavingsRecord.swift in Sources */,
 				D8D3C483040915985E641BBA /* SeedData.swift in Sources */,
 				C177A0AEB3F9610763871798 /* SharedSnapshot.swift in Sources */,
 				50199C3DF40D2EC433EA41FD /* TodayWidget.swift in Sources */,
@@ -721,6 +731,7 @@
 				F65027ADA2BDEBE1C783BB54 /* RecurringPayment.swift in Sources */,
 				D8F475587A42CF4FB062B54A /* RecurringView.swift in Sources */,
 				687FB425B5B732BE64A77F5D /* RootView.swift in Sources */,
+				D8F6CF02089E3809FB64014A /* SavingsRecord.swift in Sources */,
 				FBA77750B536E9D469167710 /* SeedData.swift in Sources */,
 				E1034848B10DB3132D2F1DA3 /* SettingsView.swift in Sources */,
 				13F2CFC4FEEBB73B02B54E8C /* SharedSnapshot.swift in Sources */,
@@ -756,7 +767,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				DEVELOPMENT_TEAM = T9KT23548H;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = PiWidgets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -777,7 +787,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = T9KT23548H;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Pi/Info.plist;
@@ -796,7 +805,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				DEVELOPMENT_TEAM = T9KT23548H;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = PiWidgets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -814,7 +822,6 @@
 		4A64576B512B1D3169DA510C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEVELOPMENT_TEAM = T9KT23548H;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = PiShareExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -832,7 +839,6 @@
 		50A7671B3948B82641D7D066 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEVELOPMENT_TEAM = T9KT23548H;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = PiShareExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -950,7 +956,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = T9KT23548H;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Pi/Info.plist;

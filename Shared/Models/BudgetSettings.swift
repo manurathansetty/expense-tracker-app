@@ -20,12 +20,17 @@ final class BudgetSettings {
     /// Day the budget month starts on. v1 keeps this at 1 (calendar month).
     var monthStartDay: Int = 1
 
+    /// When true, last month's overspend is carried into this month (a "lag
+    /// payment") and subtracted from what's available.
+    var carryOverOverspend: Bool = true
+
     init(
         monthlyIncomeMinor: Int = 0,
         currencyCode: String = Money.defaultCurrencyCode,
         monthlyCeilingMinor: Int? = nil,
         enforceBlocker: Bool = true,
-        monthStartDay: Int = 1
+        monthStartDay: Int = 1,
+        carryOverOverspend: Bool = true
     ) {
         self.id = UUID()
         self.monthlyIncomeMinor = monthlyIncomeMinor
@@ -33,5 +38,6 @@ final class BudgetSettings {
         self.monthlyCeilingMinor = monthlyCeilingMinor
         self.enforceBlocker = enforceBlocker
         self.monthStartDay = monthStartDay
+        self.carryOverOverspend = carryOverOverspend
     }
 }

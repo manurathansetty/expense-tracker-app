@@ -12,6 +12,9 @@ struct BudgetSummary: Equatable, Sendable {
     var dailyAllowanceMinor: Int
     var daysRemaining: Int
     var projectedSpendMinor: Int
+    /// Last month's overspend carried into this month ("lag payment"), already
+    /// subtracted from `ceilingMinor`.
+    var carryoverDeficitMinor: Int = 0
 
     /// Fraction of the ceiling already spent (0…1+, can exceed 1 when over).
     var fractionUsed: Double {
@@ -39,16 +42,32 @@ enum BudgetEngine {
         calendar.isDate(date, equalTo: now, toGranularity: .month)
     }
 
+    /// The calendar-month interval immediately before the one containing `now`.
+    static func previousMonthInterval(now: Date, calendar: Calendar) -> DateInterval {
+        let thisStart = monthInterval(now: now, calendar: calendar).start
+        let inPrev = calendar.date(byAdding: .day, value: -1, to: thisStart) ?? thisStart
+        return monthInterval(now: inPrev, calendar: calendar)
+    }
+
+    /// Last month's overspend (outflow beyond expendable income), or 0 when
+    /// carry-over is disabled or last month was within budget.
+    static func carryoverDeficit(prevMonthOutflowMinor: Int, expendableMinor: Int, enabled: Bool) -> Int {
+        guard enabled else { return 0 }
+        return max(0, prevMonthOutflowMinor - expendableMinor)
+    }
+
     static func summary(
         incomeMinor: Int,
         committedMinor: Int,
         monthOutflowMinor: Int,
         ceilingOverrideMinor: Int?,
         now: Date,
-        calendar: Calendar = .current
+        calendar: Calendar = .current,
+        carryoverDeficitMinor: Int = 0
     ) -> BudgetSummary {
         let expendable = max(0, incomeMinor - committedMinor)
-        let ceiling = ceilingOverrideMinor ?? expendable
+        let baseCeiling = ceilingOverrideMinor ?? expendable
+        let ceiling = max(0, baseCeiling - carryoverDeficitMinor)
         let safeToSpend = ceiling - monthOutflowMinor
 
         let daysInMonth = calendar.range(of: .day, in: .month, for: now)?.count ?? 30
@@ -70,7 +89,8 @@ enum BudgetEngine {
             safeToSpendMinor: safeToSpend,
             dailyAllowanceMinor: dailyAllowance,
             daysRemaining: daysRemaining,
-            projectedSpendMinor: projected
+            projectedSpendMinor: projected,
+            carryoverDeficitMinor: carryoverDeficitMinor
         )
     }
 

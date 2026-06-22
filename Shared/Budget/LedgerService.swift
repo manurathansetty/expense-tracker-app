@@ -54,13 +54,36 @@ struct LedgerService {
 
     func currentSummary(now: Date = .now) -> BudgetSummary {
         let s = settings()
+        let committed = activeCommittedMinor()
+        let expendable = max(0, s.monthlyIncomeMinor - committed)
+        let prev = BudgetEngine.previousMonthInterval(now: now, calendar: calendar)
+        let prevOutflow = outflow(in: prev.start..<prev.end)
+        let lag = BudgetEngine.carryoverDeficit(
+            prevMonthOutflowMinor: prevOutflow,
+            expendableMinor: expendable,
+            enabled: s.carryOverOverspend
+        )
         return BudgetEngine.summary(
             incomeMinor: s.monthlyIncomeMinor,
-            committedMinor: activeCommittedMinor(),
+            committedMinor: committed,
             monthOutflowMinor: monthOutflowMinor(now: now),
             ceilingOverrideMinor: s.monthlyCeilingMinor,
             now: now,
-            calendar: calendar
+            calendar: calendar,
+            carryoverDeficitMinor: lag
+        )
+    }
+
+    /// Last month's overspend carried into this month (0 when disabled / in budget).
+    func carryoverDeficitMinor(now: Date = .now) -> Int {
+        let s = settings()
+        let expendable = max(0, s.monthlyIncomeMinor - activeCommittedMinor())
+        let prev = BudgetEngine.previousMonthInterval(now: now, calendar: calendar)
+        let prevOutflow = outflow(in: prev.start..<prev.end)
+        return BudgetEngine.carryoverDeficit(
+            prevMonthOutflowMinor: prevOutflow,
+            expendableMinor: expendable,
+            enabled: s.carryOverOverspend
         )
     }
 
@@ -96,6 +119,58 @@ struct LedgerService {
         try? context.save()
         refreshSnapshot(now: now)
         ExternalChange.bump()
+    }
+
+    // MARK: Savings
+
+    /// Money left over this month so far: expendable income − spent.
+    func currentMonthSavedMinor(now: Date = .now) -> Int {
+        let summary = currentSummary(now: now)
+        return summary.expendableMinor - summary.spentThisMonthMinor
+    }
+
+    /// Sum of all finalized monthly savings records (excludes the live current month).
+    func totalSavedMinor() -> Int {
+        let records = (try? context.fetch(FetchDescriptor<SavingsRecord>())) ?? []
+        return records.reduce(0) { $0 + $1.savedMinor }
+    }
+
+    /// Create a savings record for each completed month that has spending but no
+    /// record yet. Uses current income/commitments as a best-effort baseline.
+    func finalizePastSavings(now: Date = .now) {
+        let monthStartOfNow = BudgetEngine.monthInterval(now: now, calendar: calendar).start
+        let s = settings()
+        let expendable = max(0, s.monthlyIncomeMinor - activeCommittedMinor())
+
+        let existing = (try? context.fetch(FetchDescriptor<SavingsRecord>())) ?? []
+        let existingKeys = Set(existing.map { $0.year * 100 + $0.month })
+
+        let expenses = (try? context.fetch(FetchDescriptor<Expense>())) ?? []
+        var outflowByMonth: [Int: (start: Date, minor: Int)] = [:]
+        for expense in expenses where expense.direction.isOutflow {
+            guard expense.date < monthStartOfNow else { continue } // only completed months
+            let comps = calendar.dateComponents([.year, .month], from: expense.date)
+            guard let year = comps.year, let month = comps.month,
+                  let start = calendar.date(from: DateComponents(year: year, month: month, day: 1)) else { continue }
+            let key = year * 100 + month
+            outflowByMonth[key, default: (start, 0)].minor += expense.amountMinor
+        }
+
+        var didInsert = false
+        for (key, value) in outflowByMonth where !existingKeys.contains(key) {
+            let record = SavingsRecord(
+                monthStart: value.start,
+                year: key / 100,
+                month: key % 100,
+                expendableMinor: expendable,
+                spentMinor: value.minor,
+                savedMinor: expendable - value.minor,
+                currencyCode: s.currencyCode
+            )
+            context.insert(record)
+            didInsert = true
+        }
+        if didInsert { try? context.save() }
     }
 
     // MARK: Recurring payments

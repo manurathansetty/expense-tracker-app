@@ -20,6 +20,7 @@ struct PiApp: App {
                     SeedData.seedIfNeeded(container.mainContext)
                     DemoData.seedIfRequested(container.mainContext)
                     let service = LedgerService(context: container.mainContext)
+                    service.finalizePastSavings()
                     service.refreshSnapshot()
                     service.rescheduleNotifications()
                 }

@@ -17,6 +17,7 @@ struct InsightsView: View {
     @Query private var commitments: [Commitment]
     @Query private var settingsList: [BudgetSettings]
     @Query(sort: \Payee.createdAt, order: .reverse) private var payees: [Payee]
+    @Query(sort: \SavingsRecord.monthStart, order: .reverse) private var savingsRecords: [SavingsRecord]
 
     enum Period: String, CaseIterable, Identifiable {
         case month = "This Month"
@@ -45,6 +46,15 @@ struct InsightsView: View {
     }
 
     private var totalMinor: Int { periodExpenses.reduce(0) { $0 + $1.amountMinor } }
+
+    private var thisMonthOutflowMinor: Int {
+        let now = Date.now
+        return expenses
+            .filter { $0.direction.isOutflow && BudgetEngine.isInCurrentMonth($0.date, now: now, calendar: .current) }
+            .reduce(0) { $0 + $1.amountMinor }
+    }
+    private var savedThisMonthMinor: Int { expendableMinor - thisMonthOutflowMinor }
+    private var totalSavedMinor: Int { savingsRecords.reduce(0) { $0 + $1.savedMinor } }
 
     private var themeStats: [ThemeStat] {
         var buckets: [UUID: Int] = [:]
@@ -104,6 +114,34 @@ struct InsightsView: View {
                             expendableMinor: period == .month ? expendableMinor : 0,
                             currencyCode: currencyCode
                         )
+                    }
+                }
+
+                Section {
+                    HStack {
+                        Label("Saved this month", systemImage: "banknote.fill")
+                        Spacer()
+                        Text(Money(minorUnits: savedThisMonthMinor, currencyCode: currencyCode).formatted())
+                            .font(.headline)
+                            .monospacedDigit()
+                            .foregroundStyle(savedThisMonthMinor >= 0 ? Color(hex: "34C759") : Color(hex: "FF375F"))
+                    }
+                    ForEach(savingsRecords) { record in
+                        HStack {
+                            Text(record.monthLabel)
+                            Spacer()
+                            Text(record.savedMoney.formatted())
+                                .monospacedDigit()
+                                .foregroundStyle(record.savedMinor >= 0 ? Color(hex: "34C759") : Color(hex: "FF375F"))
+                        }
+                    }
+                } header: {
+                    Text("Savings")
+                } footer: {
+                    if !savingsRecords.isEmpty {
+                        Text("Saved across recorded months: \(Money(minorUnits: totalSavedMinor, currencyCode: currencyCode).formatted())")
+                    } else {
+                        Text("Each completed month records what you didn't spend from your expendable income.")
                     }
                 }
 

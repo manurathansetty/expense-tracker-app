@@ -15,6 +15,7 @@ enum ModelContainerProvider {
         BudgetSettings.self,
         Commitment.self,
         RecurringPayment.self,
+        SavingsRecord.self,
     ])
 
     static let shared: ModelContainer = make()
