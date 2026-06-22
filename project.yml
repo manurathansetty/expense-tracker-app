@@ -1,0 +1,80 @@
+name: Tally
+options:
+  bundleIdPrefix: ai.pageloop
+  deploymentTarget:
+    iOS: "18.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+    SWIFT_EMIT_LOC_STRINGS: YES
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    TARGETED_DEVICE_FAMILY: "1"
+
+targets:
+  Tally:
+    type: application
+    platform: iOS
+    sources:
+      - path: Shared
+      - path: Tally
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ai.pageloop.tally
+        PRODUCT_NAME: Tally
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: Tally/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Tally/Tally.entitlements
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        ENABLE_PREVIEWS: YES
+    dependencies:
+      - target: TallyWidgets
+      - target: TallyShareExtension
+
+  TallyWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Shared
+      - path: TallyWidgets
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ai.pageloop.tally.widgets
+        PRODUCT_NAME: TallyWidgets
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: TallyWidgets/Info.plist
+        CODE_SIGN_ENTITLEMENTS: TallyWidgets/TallyWidgets.entitlements
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+
+  TallyShareExtension:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Shared
+      - path: TallyShareExtension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ai.pageloop.tally.share
+        PRODUCT_NAME: TallyShareExtension
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: TallyShareExtension/Info.plist
+        CODE_SIGN_ENTITLEMENTS: TallyShareExtension/TallyShareExtension.entitlements
+
+  TallyTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: TallyTests
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ai.pageloop.tally.tests
+        GENERATE_INFOPLIST_FILE: YES
+    dependencies:
+      - target: Tally
