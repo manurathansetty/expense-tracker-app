@@ -25,6 +25,7 @@ struct MoneyInputSheet: View {
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
             .navigationTitle(title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -42,6 +43,7 @@ struct MoneyInputSheet: View {
             }
         }
         .presentationDetents([.height(220), .medium])
+        .glassPopup()
     }
 }
 
@@ -82,6 +84,7 @@ struct EditCommitmentView: View {
                     ColorSwatchPicker(selection: $colorHex)
                 }
             }
+            .scrollContentBackground(.hidden)
             .navigationTitle(commitment == nil ? "New Commitment" : "Edit Commitment")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -93,6 +96,7 @@ struct EditCommitmentView: View {
             }
             .onAppear(perform: load)
         }
+        .glassPopup()
     }
 
     private static func defaultColor(for kind: CommitmentKind) -> String {

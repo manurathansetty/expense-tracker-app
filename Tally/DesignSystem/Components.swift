@@ -1,5 +1,25 @@
 import SwiftUI
 
+/// Subtle scale + dim press feedback for tappable cards and chips. Respects
+/// Reduce Motion (skips the scale, keeps a gentle dim).
+struct PressableButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        PressableBody(configuration: configuration)
+    }
+
+    struct PressableBody: View {
+        let configuration: ButtonStyle.Configuration
+        @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+        var body: some View {
+            configuration.label
+                .scaleEffect(configuration.isPressed && !reduceMotion ? 0.97 : 1)
+                .opacity(configuration.isPressed ? 0.85 : 1)
+                .animation(DS.spring, value: configuration.isPressed)
+        }
+    }
+}
+
 /// A rounded square badge holding an SF Symbol in a tinted color — used for
 /// categories and people throughout the app.
 struct GlyphBadge: View {
@@ -64,7 +84,7 @@ struct Chip: View {
         }
         .padding(.horizontal, DS.Spacing.md)
         .padding(.vertical, DS.Spacing.sm)
-        .foregroundStyle(isSelected ? .white : Color.primary)
+        .foregroundStyle(isSelected ? DS.onAccent : Color.primary)
         .background(
             Capsule().fill(isSelected ? tint : Color(.secondarySystemFill))
         )

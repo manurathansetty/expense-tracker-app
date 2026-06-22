@@ -40,9 +40,14 @@ struct RootView: View {
             }
             .padding(.bottom, 54) // float just above the tab bar
         }
-        .sheet(isPresented: $router.showQuickAdd) {
-            QuickAddView(prefillMessage: router.pendingMessageText)
-                .onDisappear { router.pendingMessageText = nil }
+        .sheet(item: $router.activeSheet) { sheet in
+            switch sheet {
+            case .quickAdd:
+                QuickAddView(prefillMessage: router.pendingMessageText)
+                    .onDisappear { router.pendingMessageText = nil }
+            case .recurring:
+                NavigationStack { RecurringView() }
+            }
         }
         .onChange(of: scenePhase) { _, phase in
             switch phase {
@@ -71,7 +76,7 @@ private struct QuickAddButton: View {
         Button(action: action) {
             Image(systemName: "plus")
                 .font(.title2.weight(.bold))
-                .foregroundStyle(.white)
+                .foregroundStyle(DS.onAccent)
                 .frame(width: 60, height: 60)
                 .background(
                     Circle()

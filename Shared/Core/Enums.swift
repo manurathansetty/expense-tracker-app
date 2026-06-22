@@ -50,6 +50,34 @@ enum EntrySource: String, Codable, CaseIterable, Sendable {
     }
 }
 
+/// How often a recurring payment repeats.
+enum RecurrenceCadence: String, Codable, CaseIterable, Identifiable, Sendable {
+    case weekly
+    case monthly
+    case yearly
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .weekly: return "Weekly"
+        case .monthly: return "Monthly"
+        case .yearly: return "Yearly"
+        }
+    }
+
+    /// The next occurrence strictly after `date`.
+    func nextDate(after date: Date, calendar: Calendar = .current) -> Date {
+        let components: DateComponents
+        switch self {
+        case .weekly: components = DateComponents(day: 7)
+        case .monthly: components = DateComponents(month: 1)
+        case .yearly: components = DateComponents(year: 1)
+        }
+        return calendar.date(byAdding: components, to: date) ?? date
+    }
+}
+
 /// Categories of fixed monthly commitments that are subtracted from income.
 enum CommitmentKind: String, Codable, CaseIterable, Identifiable, Sendable {
     case family

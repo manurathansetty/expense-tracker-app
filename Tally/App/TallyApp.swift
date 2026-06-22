@@ -15,7 +15,9 @@ struct TallyApp: App {
                     // Seed defaults and publish an initial widget snapshot.
                     SeedData.seedIfNeeded(container.mainContext)
                     DemoData.seedIfRequested(container.mainContext)
-                    LedgerService(context: container.mainContext).refreshSnapshot()
+                    let service = LedgerService(context: container.mainContext)
+                    service.refreshSnapshot()
+                    service.rescheduleNotifications()
                 }
                 .onOpenURL { router.handle(url: $0) }
         }

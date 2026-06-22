@@ -98,6 +98,43 @@ struct LedgerService {
         ExternalChange.bump()
     }
 
+    // MARK: Recurring payments
+
+    /// Active recurring payments due within `days` (includes overdue), soonest first.
+    func upcomingDues(within days: Int = 5, now: Date = .now) -> [RecurringPayment] {
+        let all = (try? context.fetch(FetchDescriptor<RecurringPayment>())) ?? []
+        return all
+            .filter { $0.isActive && RecurringEngine.isDueSoon($0.nextDueDate, now: now, within: days, calendar: calendar) }
+            .sorted { $0.nextDueDate < $1.nextDueDate }
+    }
+
+    /// Record a payment for a recurring item, roll its due date forward, and
+    /// reschedule notifications.
+    func markRecurringPaid(_ payment: RecurringPayment, now: Date = .now) {
+        let expense = Expense(
+            amountMinor: payment.amountMinor,
+            currencyCode: payment.currencyCode,
+            note: payment.name,
+            date: now,
+            direction: .paid,
+            source: .manual,
+            category: payment.category
+        )
+        context.insert(expense)
+        payment.lastPaidDate = now
+        payment.nextDueDate = RecurringEngine.advance(
+            payment.nextDueDate, cadence: payment.cadence, from: now, calendar: calendar
+        )
+        commit(now: now)
+        rescheduleNotifications(now: now)
+    }
+
+    /// Rebuild all pending local notifications from the current recurring set.
+    func rescheduleNotifications(now: Date = .now) {
+        let all = (try? context.fetch(FetchDescriptor<RecurringPayment>())) ?? []
+        NotificationScheduler.reschedule(all, now: now)
+    }
+
     // MARK: Widget snapshot
 
     func refreshSnapshot(now: Date = .now) {

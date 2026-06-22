@@ -47,7 +47,7 @@ private struct Step: View {
         HStack(alignment: .top, spacing: DS.Spacing.md) {
             Text("\(number)")
                 .font(.subheadline.weight(.bold))
-                .foregroundStyle(.white)
+                .foregroundStyle(DS.onAccent)
                 .frame(width: 26, height: 26)
                 .background(Circle().fill(DS.accent))
             Text(.init(text))

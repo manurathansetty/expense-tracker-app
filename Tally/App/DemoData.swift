@@ -71,6 +71,21 @@ enum DemoData {
             context.insert(expense)
         }
 
+        // Recurring payments — one overdue, one due soon, one later.
+        let recurrings: [(String, Int, RecurrenceCadence, Int, String)] = [
+            ("Phone recharge", 39900, .monthly, -1, "Bills"),
+            ("Netflix", 64900, .monthly, 3, "Fun"),
+            ("Gym membership", 150000, .monthly, 18, "Health"),
+        ]
+        for (name, amount, cadence, dueInDays, cat) in recurrings {
+            let due = Calendar.current.date(byAdding: .day, value: dueInDays, to: now) ?? now
+            let payment = RecurringPayment(
+                name: name, amountMinor: amount, currencyCode: "INR",
+                cadence: cadence, nextDueDate: due, category: category(cat)
+            )
+            context.insert(payment)
+        }
+
         try? context.save()
     }
 }

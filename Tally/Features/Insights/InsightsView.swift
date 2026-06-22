@@ -86,7 +86,10 @@ struct InsightsView: View {
                         Text(period == .month ? "Spent this month" : "Spent all time")
                             .font(.subheadline).foregroundStyle(.secondary)
                         Text(Money(minorUnits: totalMinor, currencyCode: currencyCode).formatted())
-                            .font(.system(size: 34, weight: .bold, design: .rounded))
+                            .font(.system(size: 36, weight: .bold, design: .rounded))
+                            .monospacedDigit()
+                            .contentTransition(.numericText())
+                            .animation(DS.spring, value: totalMinor)
                     }
                 }
 
@@ -149,6 +152,7 @@ private struct ThemeStatRow: View {
                 Spacer()
                 Text(Money(minorUnits: stat.amountMinor, currencyCode: currencyCode).formattedCompact())
                     .font(.subheadline.weight(.semibold))
+                    .monospacedDigit()
             }
             ProgressBar(fraction: shareOfTotal, tint: tint)
             HStack {

@@ -97,6 +97,7 @@ struct EditPayeeView: View {
                     ColorSwatchPicker(selection: $colorHex)
                 }
             }
+            .scrollContentBackground(.hidden)
             .navigationTitle(existing == nil ? "New Person" : "Edit Person")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -117,6 +118,7 @@ struct EditPayeeView: View {
             }
         }
         .presentationDetents([.medium, .large])
+        .glassPopup()
     }
 
     private func save() {

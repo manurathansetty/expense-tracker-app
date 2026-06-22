@@ -1,13 +1,20 @@
 import SwiftUI
 
-/// App-wide navigation state. Drives the quick-add sheet (including deep links
-/// from the widget and the `tally://add` URL scheme) and the selected tab.
+/// App-wide navigation state. Drives the modal sheets (quick-add, recurring) and
+/// the selected tab, including deep links from the widget / `tally://add` URL.
 @Observable
 final class AppRouter {
     enum Tab: Hashable { case ledger, insights, budget, settings }
 
+    /// A single active sheet — using one `.sheet(item:)` avoids the unreliable
+    /// behavior of stacking multiple `.sheet` modifiers on one view.
+    enum Sheet: Int, Identifiable {
+        case quickAdd, recurring
+        var id: Int { rawValue }
+    }
+
     var selectedTab: Tab = .ledger
-    var showQuickAdd = false
+    var activeSheet: Sheet?
 
     /// Bumped when the app detects writes made by another process while it was
     /// backgrounded; used to force `@Query`-backed views to re-fetch.
@@ -17,7 +24,7 @@ final class AppRouter {
     var pendingMessageText: String?
 
     init() {
-        // Dev affordance: launch into a specific tab for screenshots.
+        // Dev affordances for screenshots / deep links.
         switch ProcessInfo.processInfo.environment["TALLY_TAB"] {
         case "insights": selectedTab = .insights
         case "budget": selectedTab = .budget
@@ -25,13 +32,16 @@ final class AppRouter {
         default: break
         }
         if ProcessInfo.processInfo.environment["TALLY_QUICKADD"] == "1" {
-            showQuickAdd = true
+            activeSheet = .quickAdd
+        }
+        if ProcessInfo.processInfo.environment["TALLY_SCREEN"] == "recurring" {
+            activeSheet = .recurring
         }
     }
 
     func openQuickAdd(prefillingMessage text: String? = nil) {
         pendingMessageText = text
-        showQuickAdd = true
+        activeSheet = .quickAdd
     }
 
     /// Handle deep links such as `tally://add` or `tally://add?text=...`.

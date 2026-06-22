@@ -59,7 +59,6 @@ struct QuickAddView: View {
                 )
                 saveButton
             }
-            .background(Color(.systemGroupedBackground))
             .navigationTitle("Add")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -79,6 +78,7 @@ struct QuickAddView: View {
             }
         }
         .presentationDragIndicator(.visible)
+        .glassPopup()
     }
 
     // MARK: Sections
@@ -132,7 +132,7 @@ struct QuickAddView: View {
                                 isSelected: selectedCategory?.id == category.id
                             )
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(PressableButtonStyle())
                     }
                 }
                 .padding(.vertical, 2)
@@ -167,7 +167,7 @@ struct QuickAddView: View {
                                 isSelected: selectedPayee?.id == payee.id
                             )
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(PressableButtonStyle())
                     }
                 }
                 .padding(.vertical, 2)
@@ -195,6 +195,7 @@ struct QuickAddView: View {
         Button(action: attemptSave) {
             Text("Save")
                 .font(.headline)
+                .foregroundStyle(DS.onAccent)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, DS.Spacing.md)
         }

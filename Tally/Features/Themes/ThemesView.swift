@@ -99,6 +99,7 @@ struct CategoryEditView: View {
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
             .navigationTitle(category == nil ? "New Theme" : "Edit Theme")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -110,6 +111,7 @@ struct CategoryEditView: View {
             }
             .onAppear(perform: load)
         }
+        .glassPopup()
     }
 
     private func load() {
@@ -162,7 +164,7 @@ struct SymbolPicker: View {
                 Image(systemName: symbol)
                     .font(.system(size: 18, weight: .semibold))
                     .frame(width: 44, height: 44)
-                    .foregroundStyle(symbol == selection ? .white : .primary)
+                    .foregroundStyle(symbol == selection ? DS.onAccent : .primary)
                     .background(
                         RoundedRectangle(cornerRadius: 12, style: .continuous)
                             .fill(symbol == selection ? DS.accent : Color(.secondarySystemFill))

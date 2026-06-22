@@ -39,6 +39,7 @@ struct ShareConfirmView: View {
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
             .navigationTitle("Add to π")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -59,6 +60,7 @@ struct ShareConfirmView: View {
             }
         }
         .tint(DS.accent)
+        .glassPopup()
     }
 
     @MainActor

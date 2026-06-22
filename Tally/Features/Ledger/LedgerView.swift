@@ -9,8 +9,16 @@ struct LedgerView: View {
     @Query(sort: \Expense.date, order: .reverse) private var expenses: [Expense]
     @Query private var commitments: [Commitment]
     @Query private var settingsList: [BudgetSettings]
+    @Query private var recurringPayments: [RecurringPayment]
 
     @State private var searchText = ""
+
+    private var upcomingDues: [RecurringPayment] {
+        let now = Date.now
+        return recurringPayments
+            .filter { $0.isActive && RecurringEngine.isDueSoon($0.nextDueDate, now: now, within: 5) }
+            .sorted { $0.nextDueDate < $1.nextDueDate }
+    }
 
     private var settings: BudgetSettings? { settingsList.first }
 
@@ -60,6 +68,14 @@ struct LedgerView: View {
                     }
                 }
 
+                if !upcomingDues.isEmpty {
+                    Section {
+                        UpcomingDuesCard(payments: upcomingDues)
+                            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                            .listRowBackground(Color.clear)
+                    }
+                }
+
                 if expenses.isEmpty {
                     ContentUnavailableView {
                         Label("No expenses yet", systemImage: "indianrupeesign.circle")
@@ -88,6 +104,13 @@ struct LedgerView: View {
             .navigationTitle("π")
             .searchable(text: $searchText, prompt: "Search notes, themes, people")
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    NavigationLink {
+                        RecurringView()
+                    } label: {
+                        Image(systemName: "calendar.badge.clock")
+                    }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink {
                         PeopleView()
@@ -121,11 +144,14 @@ private struct DayHeader: View {
 
     var body: some View {
         HStack {
-            Text(dayLabel)
+            Text(dayLabel.uppercased())
+                .tracking(0.6)
             Spacer()
             Text(Money(minorUnits: outflowMinor, currencyCode: currencyCode).formattedCompact())
+                .monospacedDigit()
         }
-        .font(.footnote.weight(.semibold))
+        .font(.caption.weight(.semibold))
+        .foregroundStyle(.secondary)
         .textCase(nil)
     }
 
@@ -143,44 +169,79 @@ struct SafeToSpendBanner: View {
     let currencyCode: String
 
     private var tint: Color { DS.health(forFraction: summary.fractionUsed) }
+    private var safeMoney: Money { Money(minorUnits: max(0, summary.safeToSpendMinor), currencyCode: currencyCode) }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: DS.Spacing.md) {
-            HStack {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Safe to spend")
-                        .font(.subheadline.weight(.medium))
-                        .foregroundStyle(.secondary)
-                    Text(Money(minorUnits: max(0, summary.safeToSpendMinor), currencyCode: currencyCode).formatted())
-                        .font(.system(size: 32, weight: .bold, design: .rounded))
-                        .foregroundStyle(summary.safeToSpendMinor < 0 ? Color(hex: "FF375F") : .primary)
-                }
+        VStack(alignment: .leading, spacing: DS.Spacing.lg) {
+            HStack(alignment: .firstTextBaseline) {
+                Text("SAFE TO SPEND")
+                    .font(.caption2.weight(.semibold))
+                    .tracking(0.8)
+                    .foregroundStyle(.secondary)
                 Spacer()
-                VStack(alignment: .trailing, spacing: 2) {
-                    Text("per day")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    Text(Money(minorUnits: max(0, summary.dailyAllowanceMinor), currencyCode: currencyCode).formattedCompact())
-                        .font(.headline)
-                        .foregroundStyle(tint)
+                HStack(spacing: 4) {
+                    Image(systemName: "calendar")
+                    Text("\(Money(minorUnits: max(0, summary.dailyAllowanceMinor), currencyCode: currencyCode).formattedCompact())/day")
+                        .monospacedDigit()
                 }
+                .font(.caption.weight(.semibold))
+                .padding(.horizontal, 10)
+                .padding(.vertical, 5)
+                .background(Capsule().fill(tint.opacity(0.16)))
+                .foregroundStyle(tint)
             }
-            ProgressBar(fraction: summary.fractionUsed, tint: tint)
-            HStack {
-                Text("\(Money(minorUnits: summary.spentThisMonthMinor, currencyCode: currencyCode).formattedCompact()) of \(Money(minorUnits: summary.ceilingMinor, currencyCode: currencyCode).formattedCompact())")
-                Spacer()
-                if summary.isPaceOver {
-                    Label("Over pace", systemImage: "exclamationmark.triangle.fill")
-                        .foregroundStyle(Color(hex: "FF9F0A"))
+
+            Text(safeMoney.formatted())
+                .font(.system(size: 40, weight: .bold, design: .rounded))
+                .monospacedDigit()
+                .contentTransition(.numericText())
+                .animation(DS.spring, value: summary.safeToSpendMinor)
+                .foregroundStyle(summary.safeToSpendMinor < 0 ? Color(hex: "FF375F") : .primary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+
+            VStack(spacing: DS.Spacing.sm) {
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        Capsule().fill(Color(.tertiarySystemFill))
+                        Capsule()
+                            .fill(LinearGradient(
+                                colors: [tint, tint.opacity(0.65)],
+                                startPoint: .leading, endPoint: .trailing))
+                            .frame(width: max(6, min(1, summary.fractionUsed) * geo.size.width))
+                            .animation(DS.spring, value: summary.fractionUsed)
+                    }
                 }
+                .frame(height: 10)
+
+                HStack {
+                    Text("\(Money(minorUnits: summary.spentThisMonthMinor, currencyCode: currencyCode).formattedCompact()) of \(Money(minorUnits: summary.ceilingMinor, currencyCode: currencyCode).formattedCompact())")
+                        .monospacedDigit()
+                    Spacer()
+                    if summary.isPaceOver {
+                        Label("Over pace", systemImage: "exclamationmark.triangle.fill")
+                            .foregroundStyle(Color(hex: "FF9F0A"))
+                    }
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
             }
-            .font(.caption)
-            .foregroundStyle(.secondary)
         }
-        .padding(DS.Spacing.lg)
+        .padding(DS.Spacing.xl)
         .background(
-            RoundedRectangle(cornerRadius: DS.Radius.lg, style: .continuous)
-                .fill(Color(.secondarySystemGroupedBackground))
+            ZStack {
+                RoundedRectangle(cornerRadius: 26, style: .continuous)
+                    .fill(Color(.secondarySystemGroupedBackground))
+                RoundedRectangle(cornerRadius: 26, style: .continuous)
+                    .fill(LinearGradient(
+                        colors: [tint.opacity(0.12), .clear],
+                        startPoint: .topTrailing, endPoint: .bottomLeading))
+            }
         )
+        .overlay(
+            RoundedRectangle(cornerRadius: 26, style: .continuous)
+                .strokeBorder(Color.primary.opacity(0.05), lineWidth: 0.5)
+        )
+        .shadow(color: DS.Shadow.color, radius: DS.Shadow.radius, x: 0, y: DS.Shadow.y)
     }
 }
