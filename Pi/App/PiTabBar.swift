@@ -39,6 +39,9 @@ struct PiTabBar: View {
             addButton.offset(y: -20)
         }
         .padding(.horizontal, DS.Spacing.lg)
+        // Reserve layout height for the FAB that rises above the bar, so the
+        // safe-area inset clears it and content never hides underneath.
+        .padding(.top, 22)
     }
 
     private func tab(_ tab: AppRouter.Tab, _ title: String, _ icon: String) -> some View {
@@ -136,11 +139,11 @@ struct PiTabBar: View {
     // MARK: Geometry
 
     private func position(_ index: Int, _ count: Int) -> CGPoint {
-        let spread = 104.0
+        let spread = 128.0
         let start = 90.0 + spread / 2
         let step = count > 1 ? spread / Double(count - 1) : 0
         let angle = (start - step * Double(index)) * .pi / 180
-        let radius: CGFloat = 88
+        let radius: CGFloat = 108
         return CGPoint(x: CGFloat(cos(angle)) * radius, y: -CGFloat(sin(angle)) * radius)
     }
 

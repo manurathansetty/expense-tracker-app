@@ -25,15 +25,16 @@ struct RootView: View {
                 tab(SettingsView(), .settings)
             }
             .id(router.dataRefreshToken)
-            .safeAreaInset(edge: .bottom, spacing: 0) {
-                PiTabBar(
-                    selected: $router.selectedTab,
-                    onAdd: { Haptics.tap(); router.openQuickAdd() },
-                    onAction: { handleFan($0) },
-                    forceOpen: ProcessInfo.processInfo.environment["TALLY_FAN"] == "1"
-                )
-                .padding(.bottom, 4)
-            }
+
+            // A layout sibling (not an overlay): tab content ends above the bar,
+            // so nothing — even short lists — can hide behind it. The fan still
+            // draws over the content because this is the last sibling.
+            PiTabBar(
+                selected: $router.selectedTab,
+                onAdd: { Haptics.tap(); router.openQuickAdd() },
+                onAction: { handleFan($0) },
+                forceOpen: ProcessInfo.processInfo.environment["TALLY_FAN"] == "1"
+            )
         }
         .ignoresSafeArea(.keyboard)
         .sheet(item: $router.activeSheet, content: sheetContent)

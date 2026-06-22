@@ -30,6 +30,7 @@ struct ThemesView: View {
             .onDelete(perform: delete)
             .onMove(perform: move)
         }
+        .bottomBarClearance()
         .navigationTitle("Themes")
         .toolbar {
             ToolbarItem(placement: .topBarLeading) { EditButton() }

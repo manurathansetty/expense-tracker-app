@@ -29,6 +29,7 @@ struct RecurringView: View {
             }
             .onDelete(perform: delete)
         }
+        .bottomBarClearance()
         .navigationTitle("Recurring")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {

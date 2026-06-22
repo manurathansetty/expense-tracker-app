@@ -102,6 +102,7 @@ struct LedgerView: View {
             }
             .listStyle(.insetGrouped)
             .listSectionSpacing(14)
+            .bottomBarClearance()
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .searchable(text: $searchText, prompt: "Search notes, themes, people")

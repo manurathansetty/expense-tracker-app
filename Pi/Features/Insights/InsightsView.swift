@@ -143,6 +143,8 @@ struct InsightsView: View {
                 }
             }
             .listSectionSpacing(14)
+            .contentMargins(.top, 8, for: .scrollContent)
+            .bottomBarClearance()
             .navigationTitle("Insights")
             .navigationBarTitleDisplayMode(.inline)
         }

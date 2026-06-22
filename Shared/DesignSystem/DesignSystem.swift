@@ -90,4 +90,13 @@ extension View {
             .presentationBackground(.ultraThinMaterial)
             .presentationCornerRadius(cornerRadius)
     }
+
+    /// A little breathing room between a List's last row and the bar that sits
+    /// below it in the layout. (The bar reserves its own height as a layout
+    /// sibling, so this only adds a small gap.)
+    func bottomBarClearance(_ height: CGFloat = 12) -> some View {
+        safeAreaInset(edge: .bottom, spacing: 0) {
+            Color.clear.frame(height: height)
+        }
+    }
 }

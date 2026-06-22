@@ -25,6 +25,7 @@ struct PeopleView: View {
             }
             .onDelete(perform: delete)
         }
+        .bottomBarClearance()
         .navigationTitle("People")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
