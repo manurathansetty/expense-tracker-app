@@ -139,11 +139,11 @@ struct PiTabBar: View {
     // MARK: Geometry
 
     private func position(_ index: Int, _ count: Int) -> CGPoint {
-        let spread = 128.0
+        let spread = 142.0
         let start = 90.0 + spread / 2
         let step = count > 1 ? spread / Double(count - 1) : 0
         let angle = (start - step * Double(index)) * .pi / 180
-        let radius: CGFloat = 108
+        let radius: CGFloat = 146
         return CGPoint(x: CGFloat(cos(angle)) * radius, y: -CGFloat(sin(angle)) * radius)
     }
 
