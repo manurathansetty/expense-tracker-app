@@ -85,7 +85,7 @@ struct EditExpenseView: View {
 
             Section {
                 Button(role: .destructive, action: deleteExpense) {
-                    Label("Delete", systemImage: "trash")
+                    Text("Delete")
                         .foregroundStyle(.red)
                         .frame(maxWidth: .infinity)
                 }
