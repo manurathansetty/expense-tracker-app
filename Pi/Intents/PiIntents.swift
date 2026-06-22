@@ -87,7 +87,7 @@ struct AddExpenseIntent: AppIntent {
 }
 
 /// Exposes the intents to Siri and Spotlight with spoken phrases.
-struct TallyShortcuts: AppShortcutsProvider {
+struct PiShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(
             intent: AddExpenseIntent(),

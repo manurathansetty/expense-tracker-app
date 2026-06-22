@@ -1,5 +1,5 @@
 import XCTest
-@testable import Tally
+@testable import Pi
 
 final class RecurringEngineTests: XCTestCase {
     private func calendar() -> Calendar {

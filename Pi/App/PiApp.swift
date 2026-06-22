@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 @main
-struct TallyApp: App {
+struct PiApp: App {
     let container = ModelContainerProvider.shared
     @State private var router = AppRouter()
     @AppStorage(AppAppearance.storageKey) private var appearanceRaw = AppAppearance.system.rawValue

@@ -2,7 +2,7 @@ import WidgetKit
 import SwiftUI
 
 @main
-struct TallyWidgetsBundle: WidgetBundle {
+struct PiWidgetsBundle: WidgetBundle {
     var body: some Widget {
         TodayWidget()
     }

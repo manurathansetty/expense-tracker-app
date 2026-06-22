@@ -1,5 +1,5 @@
 import XCTest
-@testable import Tally
+@testable import Pi
 
 final class BudgetEngineTests: XCTestCase {
     private func fixedCalendar() -> Calendar {

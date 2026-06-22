@@ -1,4 +1,4 @@
-name: Tally
+name: Pi
 options:
   bundleIdPrefix: ai.pageloop
   deploymentTarget:
@@ -18,60 +18,60 @@ settings:
     TARGETED_DEVICE_FAMILY: "1"
 
 targets:
-  Tally:
+  Pi:
     type: application
     platform: iOS
     sources:
       - path: Shared
-      - path: Tally
+      - path: Pi
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: ai.pageloop.tally
-        PRODUCT_NAME: Tally
+        PRODUCT_BUNDLE_IDENTIFIER: ai.pageloop.pi
+        PRODUCT_NAME: Pi
         GENERATE_INFOPLIST_FILE: NO
-        INFOPLIST_FILE: Tally/Info.plist
+        INFOPLIST_FILE: Pi/Info.plist
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         ENABLE_PREVIEWS: YES
     dependencies:
-      - target: TallyWidgets
-      - target: TallyShareExtension
+      - target: PiWidgets
+      - target: PiShareExtension
 
-  TallyWidgets:
+  PiWidgets:
     type: app-extension
     platform: iOS
     sources:
       - path: Shared
-      - path: TallyWidgets
+      - path: PiWidgets
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: ai.pageloop.tally.widgets
-        PRODUCT_NAME: TallyWidgets
+        PRODUCT_BUNDLE_IDENTIFIER: ai.pageloop.pi.widgets
+        PRODUCT_NAME: PiWidgets
         GENERATE_INFOPLIST_FILE: NO
-        INFOPLIST_FILE: TallyWidgets/Info.plist
+        INFOPLIST_FILE: PiWidgets/Info.plist
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
 
-  TallyShareExtension:
+  PiShareExtension:
     type: app-extension
     platform: iOS
     sources:
       - path: Shared
-      - path: TallyShareExtension
+      - path: PiShareExtension
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: ai.pageloop.tally.share
-        PRODUCT_NAME: TallyShareExtension
+        PRODUCT_BUNDLE_IDENTIFIER: ai.pageloop.pi.share
+        PRODUCT_NAME: PiShareExtension
         GENERATE_INFOPLIST_FILE: NO
-        INFOPLIST_FILE: TallyShareExtension/Info.plist
+        INFOPLIST_FILE: PiShareExtension/Info.plist
 
-  TallyTests:
+  PiTests:
     type: bundle.unit-test
     platform: iOS
     sources:
-      - path: TallyTests
+      - path: PiTests
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: ai.pageloop.tally.tests
+        PRODUCT_BUNDLE_IDENTIFIER: ai.pageloop.pi.tests
         GENERATE_INFOPLIST_FILE: YES
     dependencies:
-      - target: Tally
+      - target: Pi

@@ -36,10 +36,10 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>ai.pageloop.tally</string>
+			<string>ai.pageloop.pi</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>tally</string>
+				<string>pi</string>
 			</array>
 		</dict>
 	</array>

@@ -4,10 +4,10 @@ import Foundation
 enum AppGroup {
     /// The App Group container shared by every target. Must match each target's
     /// `.entitlements` file.
-    static let identifier = "group.ai.pageloop.tally"
+    static let identifier = "group.ai.pageloop.pi"
 
     /// Custom URL scheme used for deep links (e.g. `tally://add`).
-    static let urlScheme = "tally"
+    static let urlScheme = "pi"
 
     /// `UserDefaults` suite shared across targets (used for the widget snapshot).
     static var defaults: UserDefaults {
