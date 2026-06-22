@@ -19,15 +19,26 @@ enum ModelContainerProvider {
     static let shared: ModelContainer = make()
 
     static func make() -> ModelContainer {
-        let groupConfig = ModelConfiguration(
-            schema: schema,
-            groupContainer: .identifier(AppGroup.identifier)
-        )
-        if let container = try? ModelContainer(for: schema, configurations: groupConfig) {
-            return container
+        // Only request the App Group container when the entitlement is actually
+        // applied — otherwise SwiftData fatal-errors (it does not throw) on a
+        // missing group. Unsigned builds (e.g. tests) fall back to a local store.
+        let hasAppGroup = FileManager.default
+            .containerURL(forSecurityApplicationGroupIdentifier: AppGroup.identifier) != nil
+        if hasAppGroup {
+            let groupConfig = ModelConfiguration(
+                schema: schema,
+                groupContainer: .identifier(AppGroup.identifier)
+            )
+            if let container = try? ModelContainer(for: schema, configurations: groupConfig) {
+                return container
+            }
         }
 
-        let localConfig = ModelConfiguration(schema: schema)
+        // App-local store at an explicit URL whose directory we ensure exists.
+        let appSupport = URL.applicationSupportDirectory
+        try? FileManager.default.createDirectory(at: appSupport, withIntermediateDirectories: true)
+        let localURL = appSupport.appendingPathComponent("Tally.store")
+        let localConfig = ModelConfiguration(schema: schema, url: localURL)
         if let container = try? ModelContainer(for: schema, configurations: localConfig) {
             return container
         }
