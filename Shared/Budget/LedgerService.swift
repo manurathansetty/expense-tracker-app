@@ -210,6 +210,23 @@ struct LedgerService {
         NotificationScheduler.reschedule(all, now: now)
     }
 
+    // MARK: Reset
+
+    /// Permanently delete everything and re-seed defaults. Irreversible.
+    func resetAllData(now: Date = .now) {
+        try? context.delete(model: Expense.self)
+        try? context.delete(model: RecurringPayment.self)
+        try? context.delete(model: SavingsRecord.self)
+        try? context.delete(model: Commitment.self)
+        try? context.delete(model: Payee.self)
+        try? context.delete(model: Category.self)
+        try? context.delete(model: BudgetSettings.self)
+        try? context.save()
+        SeedData.seedIfNeeded(context)
+        refreshSnapshot(now: now)
+        rescheduleNotifications(now: now)
+    }
+
     // MARK: Widget snapshot
 
     func refreshSnapshot(now: Date = .now) {

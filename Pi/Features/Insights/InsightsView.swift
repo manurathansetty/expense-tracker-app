@@ -17,7 +17,14 @@ struct InsightsView: View {
     @Query private var commitments: [Commitment]
     @Query private var settingsList: [BudgetSettings]
     @Query(sort: \Payee.createdAt, order: .reverse) private var payees: [Payee]
-    @Query(sort: \SavingsRecord.monthStart, order: .reverse) private var savingsRecords: [SavingsRecord]
+
+    enum Mode: String, CaseIterable, Identifiable {
+        case spending = "Spending"
+        case savings = "Savings"
+        var id: String { rawValue }
+    }
+    @State private var mode: Mode =
+        ProcessInfo.processInfo.environment["TALLY_INSIGHTS"] == "savings" ? .savings : .spending
 
     enum Period: String, CaseIterable, Identifiable {
         case month = "This Month"
@@ -47,15 +54,6 @@ struct InsightsView: View {
 
     private var totalMinor: Int { periodExpenses.reduce(0) { $0 + $1.amountMinor } }
 
-    private var thisMonthOutflowMinor: Int {
-        let now = Date.now
-        return expenses
-            .filter { $0.direction.isOutflow && BudgetEngine.isInCurrentMonth($0.date, now: now, calendar: .current) }
-            .reduce(0) { $0 + $1.amountMinor }
-    }
-    private var savedThisMonthMinor: Int { expendableMinor - thisMonthOutflowMinor }
-    private var totalSavedMinor: Int { savingsRecords.reduce(0) { $0 + $1.savedMinor } }
-
     private var themeStats: [ThemeStat] {
         var buckets: [UUID: Int] = [:]
         var uncategorized = 0
@@ -84,81 +82,67 @@ struct InsightsView: View {
         NavigationStack {
             List {
                 Section {
-                    Picker("Period", selection: $period) {
-                        ForEach(Period.allCases) { Text($0.rawValue).tag($0) }
+                    Picker("Mode", selection: $mode) {
+                        ForEach(Mode.allCases) { Text($0.rawValue).tag($0) }
                     }
                     .pickerStyle(.segmented)
                     .listRowBackground(Color.clear)
                 }
 
-                Section {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(period == .month ? "Spent this month" : "Spent all time")
-                            .font(.subheadline).foregroundStyle(.secondary)
-                        Text(Money(minorUnits: totalMinor, currencyCode: currencyCode).formatted())
-                            .font(.system(size: 36, weight: .bold, design: .rounded))
-                            .monospacedDigit()
-                            .contentTransition(.numericText())
-                            .animation(DS.spring, value: totalMinor)
-                    }
-                }
-
-                Section("By theme") {
-                    if themeStats.isEmpty {
-                        Text("No spending in this period.").foregroundStyle(.secondary)
-                    }
-                    ForEach(themeStats) { stat in
-                        ThemeStatRow(
-                            stat: stat,
-                            totalMinor: totalMinor,
-                            expendableMinor: period == .month ? expendableMinor : 0,
-                            currencyCode: currencyCode
-                        )
-                    }
-                }
-
-                Section {
-                    HStack {
-                        Label("Saved this month", systemImage: "banknote.fill")
-                        Spacer()
-                        Text(Money(minorUnits: savedThisMonthMinor, currencyCode: currencyCode).formatted())
-                            .font(.headline)
-                            .monospacedDigit()
-                            .foregroundStyle(savedThisMonthMinor >= 0 ? DS.positive : DS.negative)
-                    }
-                    ForEach(savingsRecords) { record in
-                        HStack {
-                            Text(record.monthLabel)
-                            Spacer()
-                            Text(record.savedMoney.formatted())
+                if mode == .spending {
+                    Section {
+                        VStack(alignment: .leading, spacing: 4) {
+                            HStack {
+                                Text("Spent")
+                                    .font(.subheadline).foregroundStyle(.secondary)
+                                Spacer()
+                                Picker("Period", selection: $period) {
+                                    ForEach(Period.allCases) { Text($0.rawValue).tag($0) }
+                                }
+                                .labelsHidden()
+                                .pickerStyle(.menu)
+                                .tint(.secondary)
+                            }
+                            Text(Money(minorUnits: totalMinor, currencyCode: currencyCode).formatted())
+                                .font(.system(size: 36, weight: .bold, design: .rounded))
                                 .monospacedDigit()
-                                .foregroundStyle(record.savedMinor >= 0 ? DS.positive : DS.negative)
+                                .contentTransition(.numericText())
+                                .animation(DS.spring, value: totalMinor)
                         }
                     }
-                } header: {
-                    Text("Savings")
-                } footer: {
-                    if !savingsRecords.isEmpty {
-                        Text("Saved across recorded months: \(Money(minorUnits: totalSavedMinor, currencyCode: currencyCode).formatted())")
-                    } else {
-                        Text("Each completed month records what you didn't spend from your expendable income.")
-                    }
-                }
 
-                if !peopleWithBalance.isEmpty {
-                    Section("People") {
-                        ForEach(peopleWithBalance) { payee in
-                            HStack {
-                                Monogram(name: payee.name, colorHex: payee.colorHex, size: 28)
-                                Text(payee.name)
-                                Spacer()
-                                Text(Money(minorUnits: payee.netBalanceMinor, currencyCode: currencyCode).formatted())
-                                    .foregroundStyle(payee.netBalanceMinor >= 0 ? DS.positive : DS.negative)
+                    Section("By theme") {
+                        if themeStats.isEmpty {
+                            Text("No spending in this period.").foregroundStyle(.secondary)
+                        }
+                        ForEach(themeStats) { stat in
+                            ThemeStatRow(
+                                stat: stat,
+                                totalMinor: totalMinor,
+                                expendableMinor: period == .month ? expendableMinor : 0,
+                                currencyCode: currencyCode
+                            )
+                        }
+                    }
+
+                    if !peopleWithBalance.isEmpty {
+                        Section("People") {
+                            ForEach(peopleWithBalance) { payee in
+                                HStack {
+                                    Monogram(name: payee.name, colorHex: payee.colorHex, size: 28)
+                                    Text(payee.name)
+                                    Spacer()
+                                    Text(Money(minorUnits: payee.netBalanceMinor, currencyCode: currencyCode).formatted())
+                                        .foregroundStyle(payee.netBalanceMinor >= 0 ? DS.positive : DS.negative)
+                                }
                             }
                         }
                     }
+                } else {
+                    SavingsView()
                 }
             }
+            .listSectionSpacing(14)
             .navigationTitle("Insights")
             .navigationBarTitleDisplayMode(.inline)
         }

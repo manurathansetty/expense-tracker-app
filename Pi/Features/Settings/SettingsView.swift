@@ -10,6 +10,7 @@ struct SettingsView: View {
 
     @State private var csvURL: URL?
     @State private var jsonURL: URL?
+    @State private var showResetConfirm = false
 
     // Non-mutating: never insert during `body`. Seeded in `.task` / at launch.
     private var settings: BudgetSettings {
@@ -103,7 +104,18 @@ struct SettingsView: View {
                     LabeledContent("Version", value: "1.0")
                     LabeledContent("Storage", value: "On-device only")
                 }
+
+                Section {
+                    Button(role: .destructive) { showResetConfirm = true } label: {
+                        Label("Reset all data", systemImage: "trash")
+                            .foregroundStyle(.red)
+                            .frame(maxWidth: .infinity)
+                    }
+                } footer: {
+                    Text("Deletes everything and starts fresh.")
+                }
             }
+            .listSectionSpacing(14)
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
             .task {
@@ -111,6 +123,15 @@ struct SettingsView: View {
                 try? context.save()
             }
             .task(id: expenses.count) { regenerateExports() }
+            .confirmationDialog("Reset all data?", isPresented: $showResetConfirm, titleVisibility: .visible) {
+                Button("Delete everything", role: .destructive) {
+                    Haptics.warning()
+                    LedgerService(context: context).resetAllData()
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("This permanently deletes all expenses, themes, people, recurring payments, set-asides, savings, and settings. This can't be undone.")
+            }
         }
     }
 

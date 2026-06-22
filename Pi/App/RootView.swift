@@ -1,8 +1,10 @@
 import SwiftUI
 import SwiftData
 
-/// Root shell: a persistent budget strip on top, the tab content, and a custom
-/// notched bottom bar with a raised center ＋ (tap to add, hold to fan out).
+/// Root shell: a thin budget bar on top, the tab content, and a custom bottom
+/// bar with a raised center ＋. The bottom bar is attached as a `safeAreaInset`
+/// so the system insets every tab's scroll content by the bar's real height —
+/// content can never hide behind it.
 struct RootView: View {
     @Environment(AppRouter.self) private var router
     @Environment(\.modelContext) private var context
@@ -13,19 +15,25 @@ struct RootView: View {
     var body: some View {
         @Bindable var router = router
 
-        ZStack(alignment: .bottom) {
-            VStack(spacing: 0) {
-                BudgetStripView()
-                tabs
-            }
+        VStack(spacing: 0) {
+            BudgetStripView()
 
-            PiTabBar(
-                selected: $router.selectedTab,
-                onAdd: { Haptics.tap(); router.openQuickAdd() },
-                onAction: { handleFan($0) },
-                forceOpen: ProcessInfo.processInfo.environment["TALLY_FAN"] == "1"
-            )
-            .padding(.bottom, 2)
+            TabView(selection: $router.selectedTab) {
+                tab(LedgerView(), .ledger)
+                tab(InsightsView(), .insights)
+                tab(BudgetView(), .budget)
+                tab(SettingsView(), .settings)
+            }
+            .id(router.dataRefreshToken)
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                PiTabBar(
+                    selected: $router.selectedTab,
+                    onAdd: { Haptics.tap(); router.openQuickAdd() },
+                    onAction: { handleFan($0) },
+                    forceOpen: ProcessInfo.processInfo.environment["TALLY_FAN"] == "1"
+                )
+                .padding(.bottom, 4)
+            }
         }
         .ignoresSafeArea(.keyboard)
         .sheet(item: $router.activeSheet, content: sheetContent)
@@ -45,25 +53,10 @@ struct RootView: View {
         }
     }
 
-    private var tabs: some View {
-        TabView(selection: Binding(
-            get: { router.selectedTab },
-            set: { router.selectedTab = $0 }
-        )) {
-            tab(LedgerView(), .ledger)
-            tab(InsightsView(), .insights)
-            tab(BudgetView(), .budget)
-            tab(SettingsView(), .settings)
-        }
-        .id(router.dataRefreshToken)
-    }
-
     private func tab<Content: View>(_ content: Content, _ which: AppRouter.Tab) -> some View {
         content
             .tag(which)
             .toolbar(.hidden, for: .tabBar)
-            // Clearance so scroll content never hides behind the raised bar/FAB.
-            .safeAreaInset(edge: .bottom) { Color.clear.frame(height: 116) }
     }
 
     @ViewBuilder

@@ -61,6 +61,7 @@ struct BudgetView: View {
             }
             .navigationTitle("Budget")
             .navigationBarTitleDisplayMode(.inline)
+            .listSectionSpacing(14)
             .task {
                 SeedData.ensureSettings(context)
                 try? context.save()

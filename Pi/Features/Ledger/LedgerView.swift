@@ -52,6 +52,14 @@ struct LedgerView: View {
     var body: some View {
         NavigationStack {
             List {
+                if !headerTitle.isEmpty {
+                    Section {
+                        GoalBanner(goal: headerTitle)
+                            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                            .listRowBackground(Color.clear)
+                    }
+                }
+
                 if (settings?.monthlyIncomeMinor ?? 0) > 0 || summary.spentThisMonthMinor > 0 {
                     Section {
                         SafeToSpendBanner(summary: summary, currencyCode: settings?.currencyCode ?? "INR")
@@ -93,7 +101,8 @@ struct LedgerView: View {
                 }
             }
             .listStyle(.insetGrouped)
-            .navigationTitle(headerTitle)
+            .listSectionSpacing(14)
+            .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .searchable(text: $searchText, prompt: "Search notes, themes, people")
         }
