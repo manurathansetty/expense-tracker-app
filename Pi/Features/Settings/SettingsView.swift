@@ -11,6 +11,7 @@ struct SettingsView: View {
     @State private var csvURL: URL?
     @State private var jsonURL: URL?
     @State private var showResetConfirm = false
+    @FocusState private var goalFocused: Bool
 
     // Non-mutating: never insert during `body`. Seeded in `.task` / at launch.
     private var settings: BudgetSettings {
@@ -34,6 +35,8 @@ struct SettingsView: View {
                             set: { settings.monthlyGoal = $0; LedgerService(context: context).save() }
                         ), axis: .vertical)
                         .lineLimit(1...3)
+                        .focused($goalFocused)
+                        .submitLabel(.done)
                     }
                 } header: {
                     Text("This month's goal")
@@ -117,7 +120,7 @@ struct SettingsView: View {
 
                 Section {
                     Button(role: .destructive) { showResetConfirm = true } label: {
-                        Label("Reset all data", systemImage: "trash")
+                        Text("Reset all data")
                             .foregroundStyle(.red)
                             .frame(maxWidth: .infinity)
                     }
@@ -130,6 +133,12 @@ struct SettingsView: View {
             .bottomBarClearance()
             .navigationTitle("More")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") { goalFocused = false }
+                }
+            }
             .task {
                 SeedData.ensureSettings(context)
                 try? context.save()

@@ -62,10 +62,6 @@ struct QuickAddView: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
                 }
-                ToolbarItemGroup(placement: .keyboard) {
-                    Spacer()
-                    Button("Done") { amountFocused = false }
-                }
             }
             .onAppear {
                 applyPrefill()
@@ -208,14 +204,14 @@ struct QuickAddView: View {
                 .font(.headline)
                 .foregroundStyle(DS.onAccent)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, DS.Spacing.md)
         }
         .buttonStyle(.borderedProminent)
+        .controlSize(.large)
         .tint(DS.accent)
         .disabled(enteredMinor == 0)
         .padding(.horizontal, DS.Spacing.lg)
-        .padding(.vertical, DS.Spacing.md)
-        .background(.bar)
+        .padding(.top, DS.Spacing.sm)
+        .padding(.bottom, DS.Spacing.xs)
     }
 
     // MARK: Save
