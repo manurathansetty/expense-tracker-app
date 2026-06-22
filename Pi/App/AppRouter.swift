@@ -9,7 +9,7 @@ final class AppRouter {
     /// A single active sheet — using one `.sheet(item:)` avoids the unreliable
     /// behavior of stacking multiple `.sheet` modifiers on one view.
     enum Sheet: Int, Identifiable {
-        case quickAdd, recurring
+        case quickAdd, recurring, addTheme, addPerson, addRecurring
         var id: Int { rawValue }
     }
 

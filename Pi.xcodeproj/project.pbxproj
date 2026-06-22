@@ -35,6 +35,7 @@
 		5227F94C94E1FEC241F5D6B4 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C22D7B76F257FDDD9E16961 /* Color+Hex.swift */; };
 		541B1E517185B801120F976B /* TransactionParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35884FF95EEE126D384A4934 /* TransactionParser.swift */; };
 		55581E1A6005CF7DB3A85616 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C6FB8F4692C5CF8E144753 /* Components.swift */; };
+		5758CC8A0A5393CCBEF6D062 /* PiTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A89D6E4AE7A84C71C40646 /* PiTabBar.swift */; };
 		578B0E77F6577C8016631D15 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F86CAFADC9F9BE9F1B6D6A0 /* Haptics.swift */; };
 		5CCC0265BCF8B791A099BBCD /* TransactionParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35884FF95EEE126D384A4934 /* TransactionParser.swift */; };
 		5E0AD12665B9756CBEB5F57B /* TransactionParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35884FF95EEE126D384A4934 /* TransactionParser.swift */; };
@@ -57,6 +58,7 @@
 		8F2EEA33AE145260F7E7BD48 /* ModelContainerProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6596C78C33912A4B3538B843 /* ModelContainerProvider.swift */; };
 		8FACFD57688D2AA94ADBB980 /* Payee.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3657C10613E4699623F7850 /* Payee.swift */; };
 		911659D5A34B426233F2056B /* PiShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B736B79840BD49D0111BA7F8 /* PiShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		931C09763CAB70F120D30C62 /* BudgetStripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0025DFE0630ED5CA96BDF0A /* BudgetStripView.swift */; };
 		93E0E3E18B67D45DACBAF701 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F5CF1BB8998F05630965CB /* Category.swift */; };
 		987C57C72927F06667F98187 /* ExpenseRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C958D4FF707D45E123429156 /* ExpenseRow.swift */; };
 		9895C615F8EB70FF353A6728 /* Expense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815C132004AADE79246A5116 /* Expense.swift */; };
@@ -154,6 +156,7 @@
 		125072246841304BD08E2092 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		14941B84B216CFB6DE6E29C6 /* LedgerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LedgerService.swift; sourceTree = "<group>"; };
 		1D3DCDA01DE071F6B774536A /* ThemesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesView.swift; sourceTree = "<group>"; };
+		26A89D6E4AE7A84C71C40646 /* PiTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiTabBar.swift; sourceTree = "<group>"; };
 		2974C9B52F482034C64EBCA2 /* SavingsRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingsRecord.swift; sourceTree = "<group>"; };
 		3501213BF53809CE117ADA58 /* Exporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Exporter.swift; sourceTree = "<group>"; };
 		35884FF95EEE126D384A4934 /* TransactionParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionParser.swift; sourceTree = "<group>"; };
@@ -184,6 +187,7 @@
 		8F58CB29A42C035780AE7DFD /* MoneyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoneyTests.swift; sourceTree = "<group>"; };
 		952A482B25EF7D536166FE2A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		95784D062E59097FB4881DCD /* TodayWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayWidget.swift; sourceTree = "<group>"; };
+		A0025DFE0630ED5CA96BDF0A /* BudgetStripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetStripView.swift; sourceTree = "<group>"; };
 		A3657C10613E4699623F7850 /* Payee.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Payee.swift; sourceTree = "<group>"; };
 		B736B79840BD49D0111BA7F8 /* PiShareExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = PiShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B757153E55B33361D444E1C9 /* AppGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroup.swift; sourceTree = "<group>"; };
@@ -374,6 +378,7 @@
 				E0FFEAA8A43C6B7EB344B806 /* AppRouter.swift */,
 				BC0F62F090CC74A119FD80EF /* DemoData.swift */,
 				3E76AEC362C6C759EB16443C /* PiApp.swift */,
+				26A89D6E4AE7A84C71C40646 /* PiTabBar.swift */,
 				F150BD301BB7B5F449DCD3F4 /* RootView.swift */,
 			);
 			path = App;
@@ -397,6 +402,7 @@
 			isa = PBXGroup;
 			children = (
 				43AD591095C0858B5CC378AB /* BudgetEditors.swift */,
+				A0025DFE0630ED5CA96BDF0A /* BudgetStripView.swift */,
 				F6689DD4BD21AADE12DB5BC3 /* BudgetView.swift */,
 			);
 			path = Budget;
@@ -703,6 +709,7 @@
 				A1FE6D63949C4D7AE2AD1AB2 /* BudgetEditors.swift in Sources */,
 				E4E6FAEA0B56FC009E211918 /* BudgetEngine.swift in Sources */,
 				0DC6232C19A3D4200A0BC8D2 /* BudgetSettings.swift in Sources */,
+				931C09763CAB70F120D30C62 /* BudgetStripView.swift in Sources */,
 				A4449D552CB9C3C9A2E99177 /* BudgetView.swift in Sources */,
 				4770120B41FBD9430FA7C0D6 /* Category.swift in Sources */,
 				8AE0B4671ECA5C168F93C4ED /* Color+Hex.swift in Sources */,
@@ -726,6 +733,7 @@
 				FC94BA33707F155431ECCB2C /* PeopleView.swift in Sources */,
 				FE8A0B1561B604245AB2BB04 /* PiApp.swift in Sources */,
 				15C616AAEE6B18F78876DDF2 /* PiIntents.swift in Sources */,
+				5758CC8A0A5393CCBEF6D062 /* PiTabBar.swift in Sources */,
 				F4D8A112F809F469B48D1842 /* QuickAddView.swift in Sources */,
 				1AA38F3F8DEC3271CAE75709 /* RecurringEngine.swift in Sources */,
 				F65027ADA2BDEBE1C783BB54 /* RecurringPayment.swift in Sources */,

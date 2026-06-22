@@ -30,6 +30,9 @@ struct SettingsView: View {
                     NavigationLink {
                         PeopleView()
                     } label: { Label("People", systemImage: "person.2.fill") }
+                    NavigationLink {
+                        RecurringView()
+                    } label: { Label("Recurring payments", systemImage: "calendar.badge.clock") }
                 }
 
                 Section("Appearance") {

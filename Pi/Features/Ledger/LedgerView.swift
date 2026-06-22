@@ -7,7 +7,6 @@ struct LedgerView: View {
     @Environment(AppRouter.self) private var router
 
     @Query(sort: \Expense.date, order: .reverse) private var expenses: [Expense]
-    @Query private var commitments: [Commitment]
     @Query private var settingsList: [BudgetSettings]
     @Query private var recurringPayments: [RecurringPayment]
 
@@ -21,21 +20,6 @@ struct LedgerView: View {
     }
 
     private var settings: BudgetSettings? { settingsList.first }
-
-    private var summary: BudgetSummary {
-        let committed = commitments.filter(\.isActive).reduce(0) { $0 + $1.amountMinor }
-        let now = Date.now
-        let monthOutflow = expenses
-            .filter { BudgetEngine.isInCurrentMonth($0.date, now: now, calendar: .current) && $0.direction.isOutflow }
-            .reduce(0) { $0 + $1.amountMinor }
-        return BudgetEngine.summary(
-            incomeMinor: settings?.monthlyIncomeMinor ?? 0,
-            committedMinor: committed,
-            monthOutflowMinor: monthOutflow,
-            ceilingOverrideMinor: settings?.monthlyCeilingMinor,
-            now: now
-        )
-    }
 
     private var filteredExpenses: [Expense] {
         guard !searchText.isEmpty else { return expenses }
@@ -60,14 +44,6 @@ struct LedgerView: View {
     var body: some View {
         NavigationStack {
             List {
-                if settings?.monthlyIncomeMinor ?? 0 > 0 || summary.spentThisMonthMinor > 0 {
-                    Section {
-                        SafeToSpendBanner(summary: summary, currencyCode: settings?.currencyCode ?? "INR")
-                            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
-                            .listRowBackground(Color.clear)
-                    }
-                }
-
                 if !upcomingDues.isEmpty {
                     Section {
                         UpcomingDuesCard(payments: upcomingDues)
@@ -103,22 +79,6 @@ struct LedgerView: View {
             .listStyle(.insetGrouped)
             .navigationTitle("π")
             .searchable(text: $searchText, prompt: "Search notes, themes, people")
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    NavigationLink {
-                        RecurringView()
-                    } label: {
-                        Image(systemName: "calendar.badge.clock")
-                    }
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink {
-                        PeopleView()
-                    } label: {
-                        Image(systemName: "person.2.fill")
-                    }
-                }
-            }
         }
     }
 

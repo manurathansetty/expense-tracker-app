@@ -1,62 +1,50 @@
 import SwiftUI
 import SwiftData
 
-/// Root tab shell with a prominent center quick-add button.
+/// Root shell: a persistent budget strip on top, the tab content, and a custom
+/// notched bottom bar with a raised center ＋ (tap to add, hold to fan out).
 struct RootView: View {
     @Environment(AppRouter.self) private var router
     @Environment(\.modelContext) private var context
     @Environment(\.scenePhase) private var scenePhase
 
     @State private var writeCounterAtBackground = ExternalChange.current()
+    @State private var showFan = ProcessInfo.processInfo.environment["TALLY_FAN"] == "1"
 
     var body: some View {
         @Bindable var router = router
 
         ZStack(alignment: .bottom) {
-            TabView(selection: $router.selectedTab) {
-                LedgerView()
-                    .tabItem { Label("Ledger", systemImage: "list.bullet.rectangle.portrait") }
-                    .tag(AppRouter.Tab.ledger)
-
-                InsightsView()
-                    .tabItem { Label("Insights", systemImage: "chart.pie.fill") }
-                    .tag(AppRouter.Tab.insights)
-
-                BudgetView()
-                    .tabItem { Label("Budget", systemImage: "target") }
-                    .tag(AppRouter.Tab.budget)
-
-                SettingsView()
-                    .tabItem { Label("Settings", systemImage: "gearshape.fill") }
-                    .tag(AppRouter.Tab.settings)
+            VStack(spacing: 0) {
+                BudgetStripView()
+                tabs
             }
-            // Re-create the tab content (and its @Query fetches) only when another
-            // process wrote while we were backgrounded — preserves navigation otherwise.
-            .id(router.dataRefreshToken)
 
-            QuickAddButton {
-                Haptics.tap()
-                router.openQuickAdd()
-            }
-            .padding(.bottom, 54) // float just above the tab bar
-        }
-        .sheet(item: $router.activeSheet) { sheet in
-            switch sheet {
-            case .quickAdd:
-                QuickAddView(prefillMessage: router.pendingMessageText)
-                    .onDisappear { router.pendingMessageText = nil }
-            case .recurring:
-                NavigationStack { RecurringView() }
+            PiTabBar(
+                selected: $router.selectedTab,
+                onAdd: { Haptics.tap(); router.openQuickAdd() },
+                onLongPress: { Haptics.success(); showFan = true }
+            )
+            .padding(.bottom, 2)
+
+            if showFan {
+                QuickActionFan(
+                    onSelect: { handleFan($0) },
+                    onDismiss: { showFan = false }
+                )
+                .transition(.opacity)
+                .zIndex(10)
             }
         }
+        .animation(DS.spring, value: showFan)
+        .ignoresSafeArea(.keyboard)
+        .sheet(item: $router.activeSheet, content: sheetContent)
         .onChange(of: scenePhase) { _, phase in
             switch phase {
             case .background, .inactive:
                 writeCounterAtBackground = ExternalChange.current()
             case .active:
-                // Recompute time-relative widget figures (handles day/month rollover).
                 LedgerService(context: context).refreshSnapshot()
-                // If another process wrote while we were away, force a re-fetch.
                 if ExternalChange.current() != writeCounterAtBackground {
                     router.dataRefreshToken += 1
                     writeCounterAtBackground = ExternalChange.current()
@@ -66,24 +54,51 @@ struct RootView: View {
             }
         }
     }
-}
 
-/// The floating + button.
-private struct QuickAddButton: View {
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            Image(systemName: "plus")
-                .font(.title2.weight(.bold))
-                .foregroundStyle(DS.onAccent)
-                .frame(width: 60, height: 60)
-                .background(
-                    Circle()
-                        .fill(DS.accent)
-                        .shadow(color: DS.accent.opacity(0.4), radius: 10, y: 4)
-                )
+    private var tabs: some View {
+        TabView(selection: Binding(
+            get: { router.selectedTab },
+            set: { router.selectedTab = $0 }
+        )) {
+            tab(LedgerView(), .ledger)
+            tab(InsightsView(), .insights)
+            tab(BudgetView(), .budget)
+            tab(SettingsView(), .settings)
         }
-        .accessibilityLabel("Add expense")
+        .id(router.dataRefreshToken)
+    }
+
+    private func tab<Content: View>(_ content: Content, _ which: AppRouter.Tab) -> some View {
+        content
+            .tag(which)
+            .toolbar(.hidden, for: .tabBar)
+            .safeAreaInset(edge: .bottom) { Color.clear.frame(height: 94) }
+    }
+
+    @ViewBuilder
+    private func sheetContent(_ sheet: AppRouter.Sheet) -> some View {
+        switch sheet {
+        case .quickAdd:
+            QuickAddView(prefillMessage: router.pendingMessageText)
+                .onDisappear { router.pendingMessageText = nil }
+        case .recurring:
+            NavigationStack { RecurringView() }
+        case .addTheme:
+            CategoryEditView(category: nil)
+        case .addPerson:
+            EditPayeeView()
+        case .addRecurring:
+            EditRecurringView(payment: nil)
+        }
+    }
+
+    private func handleFan(_ action: FanAction) {
+        showFan = false
+        switch action {
+        case .expense: router.openQuickAdd()
+        case .theme: router.activeSheet = .addTheme
+        case .person: router.activeSheet = .addPerson
+        case .recurring: router.activeSheet = .addRecurring
+        }
     }
 }

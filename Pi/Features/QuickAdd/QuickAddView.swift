@@ -40,22 +40,31 @@ struct QuickAddView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: DS.Spacing.xl) {
                     amountField
-                    directionPicker
-                    themeSection
-                    peopleSection
-                    noteField
+                    // Tapping anywhere in this lower group pops the number keyboard down.
+                    VStack(alignment: .leading, spacing: DS.Spacing.xl) {
+                        directionPicker
+                        themeSection
+                        peopleSection
+                        noteField
+                    }
+                    .contentShape(Rectangle())
+                    .onTapGesture { amountFocused = false }
                 }
                 .padding(.horizontal, DS.Spacing.lg)
                 .padding(.top, DS.Spacing.md)
                 .padding(.bottom, 100)
             }
-            .scrollDismissesKeyboard(.interactively)
+            .scrollDismissesKeyboard(.immediately)
             .safeAreaInset(edge: .bottom) { saveButton }
             .navigationTitle("Add")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
+                }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") { amountFocused = false }
                 }
             }
             .onAppear {
@@ -108,7 +117,10 @@ struct QuickAddView: View {
             }
         }
         .pickerStyle(.segmented)
-        .onChange(of: direction) { _, _ in Haptics.select() }
+        .onChange(of: direction) { _, _ in
+            Haptics.select()
+            amountFocused = false
+        }
     }
 
     private var themeSection: some View {
@@ -121,6 +133,7 @@ struct QuickAddView: View {
                     ForEach(categories) { category in
                         Button {
                             Haptics.select()
+                            amountFocused = false
                             selectedCategory = (selectedCategory?.id == category.id) ? nil : category
                         } label: {
                             Chip(
@@ -147,6 +160,7 @@ struct QuickAddView: View {
                 HStack(spacing: DS.Spacing.sm) {
                     Button {
                         Haptics.tap()
+                        amountFocused = false
                         showAddPerson = true
                     } label: {
                         Chip(title: "Add", systemImage: "person.badge.plus", isSelected: false)
@@ -156,6 +170,7 @@ struct QuickAddView: View {
                     ForEach(payees) { payee in
                         Button {
                             Haptics.select()
+                            amountFocused = false
                             selectedPayee = (selectedPayee?.id == payee.id) ? nil : payee
                         } label: {
                             Chip(
