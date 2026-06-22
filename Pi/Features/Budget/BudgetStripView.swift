@@ -19,7 +19,15 @@ struct BudgetStripView: View {
     }
 
     var body: some View {
-        VStack(spacing: DS.Spacing.sm) {
+        VStack(spacing: 0) {
+            BudgetBar(
+                fraction: summary.fractionUsed,
+                tint: DS.health(forFraction: summary.fractionUsed),
+                isOver: summary.isOverCeiling
+            )
+            .frame(height: 5)
+            .frame(maxWidth: .infinity)
+
             Button {
                 Haptics.tap()
                 router.selectedTab = .settings
@@ -42,15 +50,7 @@ struct BudgetStripView: View {
             }
             .buttonStyle(.plain)
             .padding(.horizontal, DS.Spacing.lg)
-            .padding(.top, DS.Spacing.xs)
-
-            BudgetBar(
-                fraction: summary.fractionUsed,
-                tint: DS.health(forFraction: summary.fractionUsed),
-                isOver: summary.isOverCeiling
-            )
-            .frame(height: 5)
-            .frame(maxWidth: .infinity)
+            .padding(.vertical, DS.Spacing.sm)
         }
         .background(.bar, ignoresSafeAreaEdges: .top)
     }
