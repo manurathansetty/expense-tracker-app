@@ -206,7 +206,7 @@ enum FanAction: CaseIterable, Identifiable {
     }
     var color: Color {
         switch self {
-        case .expense: return Color(hex: "5E5CE6")
+        case .expense: return DS.accent // monochrome graphite (matches the app accent)
         case .theme: return Color(hex: "BF5AF2")
         case .person: return Color(hex: "30B0C7")
         case .recurring: return DS.warning

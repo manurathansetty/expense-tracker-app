@@ -42,7 +42,7 @@ struct UpcomingDuesCard: View {
                         Haptics.success()
                         LedgerService(context: context).markRecurringPaid(payment)
                     } label: {
-                        Text("Pay")
+                        Text("Paid")
                             .font(.caption.weight(.bold))
                             .foregroundStyle(DS.onAccent)
                             .padding(.horizontal, DS.Spacing.md)

@@ -55,7 +55,7 @@ struct RecurringRow: View {
 
     var body: some View {
         HStack(spacing: DS.Spacing.md) {
-            GlyphBadge(symbolName: payment.symbolName, colorHex: payment.colorHex)
+            CalendarDateTile(date: payment.nextDueDate, tint: tileTint)
             VStack(alignment: .leading, spacing: 2) {
                 Text(payment.name).font(.body.weight(.medium))
                 Text("\(payment.cadence.label) · \(RecurringEngine.dueLabel(payment.nextDueDate, now: .now))")
@@ -65,6 +65,7 @@ struct RecurringRow: View {
             Spacer()
             Text(payment.money.formattedCompact())
                 .font(.subheadline.weight(.semibold))
+                .monospacedDigit()
                 .foregroundStyle(payment.isActive ? .primary : .secondary)
         }
         .opacity(payment.isActive ? 1 : 0.5)
@@ -75,6 +76,44 @@ struct RecurringRow: View {
         if days < 0 { return DS.negative }
         if days <= 5 { return DS.warning }
         return .secondary
+    }
+
+    private var tileTint: Color {
+        let days = RecurringEngine.daysUntil(payment.nextDueDate, now: .now)
+        if days < 0 { return DS.negative }
+        if days <= 5 { return DS.warning }
+        return DS.accent
+    }
+}
+
+/// A mini calendar page: a tinted month strip over a large day number.
+struct CalendarDateTile: View {
+    let date: Date
+    var tint: Color = DS.accent
+    var size: CGFloat = 46
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Text(date.formatted(.dateTime.month(.abbreviated)).uppercased())
+                .font(.system(size: 9, weight: .bold))
+                .tracking(0.4)
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 3)
+                .background(tint)
+            Text(date.formatted(.dateTime.day()))
+                .font(.system(size: 18, weight: .bold, design: .rounded))
+                .monospacedDigit()
+                .foregroundStyle(.primary)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .frame(width: size, height: size)
+        .background(Color(.tertiarySystemFill))
+        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .strokeBorder(Color.primary.opacity(0.08), lineWidth: 0.5)
+        )
     }
 }
 
